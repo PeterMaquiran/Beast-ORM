@@ -13,11 +13,11 @@ class DatabaseManager {
     this.databases[config.databaseName] = new DatabaseService(config)
   }
 
-  getDb(databaseName) {
+  getDb(databaseName: string) {
     return this.databases[databaseName]
   }
 
-  getTableSchema(databaseName, tableName) {
+  getTableSchema(databaseName: string, tableName: string) {
     return this.databases[databaseName].objectStore[tableName].schema
   }
 }

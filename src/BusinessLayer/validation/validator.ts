@@ -41,9 +41,9 @@ class Validator {
     return (Object: string):  FormValidationError => {
 
       for(const fieldName of fieldNames) {
-        const validator: field = data[fieldName]
+        const validator: field = (data as any)[fieldName] as field
 
-        const value = Object[fieldName]
+        const value = (Object as any)[fieldName]
 
         const result = validator.valid(value)
 

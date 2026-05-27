@@ -10,7 +10,7 @@ export class DatabaseTransaction {
   private schema: ITableSchema
   operationQueue = [];
   isTransactionInProgress = false;
-  db:  IDBDatabase;
+  db:  IDBDatabase = null as any;
   private  errorPassive: Boolean = false
   private  finishTransactionCallback: Function[] = []
   private  IDBTransaction?: IDBTransaction
@@ -74,7 +74,7 @@ export class DatabaseTransaction {
         resolve(result)
       })
 
-      this.operationQueue.push(operation);
+      this.operationQueue.push(operation as never);
 
     })
   }
@@ -141,24 +141,24 @@ export class DatabaseTransaction {
 
   private executeOperation(operationClass: IAllDatabaseOperation) {
     const { operation, data } = operationClass;
-    const objectStore = this.IDBTransaction.objectStore(this.schema.name);
+    const objectStore = this.IDBTransaction?.objectStore(this.schema.name);
 
-    let request: IDBRequest;
+    let request: IDBRequest<any> = null as any;
 
     try {
-      request = objectStore[operation](data);
+      request = (objectStore as any)[operation](data);
     } catch (error) {
       console.log(data,"retry", error)
     }
 
-    return operationClass.execute(request)
+    return (operationClass as unknown as any).execute(request as unknown as IDBRequest<any>) as Promise<IOperationResult>
   }
 
   private abortTransaction(cause: ConstraintError) {
     const transactionAbortion = new TransactionAbortion()
     transactionAbortion.cause =  cause
     this.transactionInto =  err(transactionAbortion)
-    this.IDBTransaction.abort();
+    this.IDBTransaction?.abort();
   }
 
   private commitTransaction(): TransactionInfo {
@@ -166,7 +166,7 @@ export class DatabaseTransaction {
     let transactionInfo = new TransactionInfo()
 
     try {
-      this.IDBTransaction.commit();
+      this.IDBTransaction?.commit();
       transactionInfo.hasChangeDb  = true
       this.executeTrigger()
     } catch (error) {

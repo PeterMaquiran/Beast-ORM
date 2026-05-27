@@ -6,7 +6,7 @@ import { RuntimeMethods as RM } from "../runtimeMethods/runTimeMethods.js";
 
 export class MiddleTable {
 
-  addMiddleTable(foreignKeyFieldName:string, foreignKeyTableName, ArgCurrentModelName: string, databaseName: string): ITableSchema {
+  addMiddleTable(foreignKeyFieldName:string, foreignKeyTableName: string, ArgCurrentModelName: string, databaseName: string): ITableSchema {
 
     const foreignKeyModelName = capitalizeFirstLetter(foreignKeyTableName)
     const currentModelName = capitalizeFirstLetter(ArgCurrentModelName)
@@ -61,7 +61,7 @@ export class MiddleTable {
   }
 
 
-  generateGenericModel ({ModelName, middleTableSchema}) {
+  generateGenericModel ({ModelName, middleTableSchema}: {ModelName: string, middleTableSchema: ITableSchema}) {
 
     class GenericModel extends  Model<GenericModel> {}
 

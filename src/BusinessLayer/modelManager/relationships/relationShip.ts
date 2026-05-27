@@ -1,5 +1,5 @@
 import { Model } from "../../../Presentation/Api.js"
-import { APIOk, APIResponse } from "../../../Utility/Either/APIresponse.js"
+import { APIOk, APIResponse } from "../../../Utility/Either/APIResponse.js"
 import { getArgIdWithT } from "../../../Utility/Model/utils.js"
 import { capitalizeFirstLetter } from "../../../Utility/utils.js"
 import { IDatabaseSchema, IMethodWithModels } from "../../_interface/interface.type"
@@ -35,7 +35,7 @@ export class RelationShip {
   addToMiddleTable<T>(currentModel: Model<any>, otherModel : typeof Model<any>, toAdd:  Model<any>, middleTableModel: typeof Model<any>) {
     const otherParameterName = otherModel.getTableSchema().name
     const modelWithGetterTableName = capitalizeFirstLetter(currentModel.getModel().getTableSchema().name)
-    const parameters = {}
+    const parameters: any = {}
 
     parameters["iD"+otherParameterName] = getArgIdWithT(otherModel, toAdd)
     parameters["iD"+modelWithGetterTableName] = getArgIdWithT(currentModel, currentModel)
@@ -46,7 +46,7 @@ export class RelationShip {
 
   async getAll<T>(currentModel: Model<any>, otherModel : typeof Model<any>, middleTableModel: typeof Model<any>): Promise<APIResponse<T[], any>>  {
 
-    const parameters = {}
+    const parameters: any = {}
     const currentTableName = currentModel.getModel().getTableSchema().name
     const otherParameterName = otherModel.getTableSchema().name
 
@@ -55,8 +55,8 @@ export class RelationShip {
     const [list] =  await middleTableModel.filter<T>(parameters).execute()
 
     const asyncOperations: Promise<T>[] = list.map(async (e) => {
-      await e["iD" + otherParameterName].get();
-      return e["iD" + otherParameterName];
+      await (e as any)["iD" + otherParameterName].get();
+      return (e as any)["iD" + otherParameterName];
     });
 
     // Use Promise.all to wait for all asynchronous operations to complete
@@ -89,27 +89,27 @@ export class RelationShip {
 
 
 
-          const middleTableModel = _MiddleModels.find(e => {
+          const middleTableModel: any = _MiddleModels.find(e => {
             if (e.getTableSchema().name == info.tableName) {
               return true
             }
           })
 
-          const otherModel:typeof Model<any> = currentModel.getModelSchema()[fieldName].model
+          const otherModel:typeof Model<any> = (currentModel as any).getModelSchema()[fieldName as string].model
           const otherParameterName = otherModel.getTableSchema().name
 
           const currentTableName = capitalizeFirstLetter(currentModelName)
 
           const funcAdd = function(Model: Model<any>) {
 
-            const parameters = {}
+            const parameters: any = {}
 
             parameters["iD"+otherParameterName] = getArgIdWithT(otherModel, Model)
-            parameters["iD"+currentTableName] = getArgIdWithT(currentModel, this)
+            parameters["iD"+currentTableName] = getArgIdWithT(currentModel, RelationShip.prototype)
 
             // console.log({parameters,currentTableName, otherParameterName })
 
-            return middleTableModel.create(parameters)
+            return (middleTableModel as any).create(parameters)
 
           }
 
@@ -120,13 +120,13 @@ export class RelationShip {
 
           const funcGetAll = async function() {
 
-            const parameters = {}
+            const parameters: any = {}
 
-            parameters["iD"+currentTableName] = getArgIdWithT(currentModel, this)
+            parameters["iD"+currentTableName] = getArgIdWithT(currentModel, RelationShip.prototype);  
 
-            const [result] =  await middleTableModel.filter<Model<any>>(parameters).execute()
+            const [result] =  await (middleTableModel as any).filter(parameters as any).execute()
 
-            const asyncOperations = result.map(async (e) => {
+            const asyncOperations = result.map(async (e: any) => {
               await e["iD" + otherParameterName].get();
               return e["iD" + otherParameterName] as Model<any>
             });

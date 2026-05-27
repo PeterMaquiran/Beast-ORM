@@ -1,9 +1,18 @@
 import { getDeep } from "../../../Utility/utils.js"
 
+interface payload {
+	fieldName: string,
+	arg: any,
+	row: any,
+	fieldPath: string,
+	customData?: any
+	rowFieldValue?: any[]
+}
+
 
 
 export class gt {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 		let _rowFieldValue
 
 		try {
@@ -20,7 +29,7 @@ export class gt {
 }
 
 export class iexact {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 		let _rowFieldValue
 
 		try {
@@ -36,7 +45,7 @@ export class iexact {
 	}
 }
 export class gte {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 		let _rowFieldValue
 
 		try {
@@ -54,7 +63,7 @@ export class gte {
 
 
 export class lt {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean{
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean{
 
 		let _rowFieldValue
     // console.log(_rowFieldValue, arg)
@@ -74,7 +83,7 @@ export class lt {
 
 
 export class lte {
-	static validate({fieldName, arg,  row, fieldPath}):boolean {
+	static validate({fieldName, arg,  row, fieldPath}: payload):boolean {
 
 		let _rowFieldValue
 
@@ -94,7 +103,7 @@ export class lte {
 
 
 export class not {
-	static validate({fieldName, arg,  row, fieldPath}):boolean {
+	static validate({fieldName, arg,  row, fieldPath}: payload):boolean {
 
 		let _rowFieldValue
 
@@ -113,7 +122,7 @@ export class not {
 }
 
 export class eq {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 		let _rowFieldValue
 
 		try {
@@ -130,7 +139,7 @@ export class eq {
 }
 
 export class contains {
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -143,7 +152,7 @@ export class contains {
 			return false
 		}
 
-		return _rowFieldValue.some(r=> arg.includes(r))
+		return _rowFieldValue.some((r: any) => arg.includes(r))
 
 	}
 }
@@ -151,7 +160,7 @@ export class contains {
 
 
 export class info {
-	static run({row, fieldPath}): {value, present} {
+	static run({row, fieldPath}: payload): {value: any, present: boolean} {
 		let _rowFieldValue
 		try {
 			_rowFieldValue = getDeep(row, fieldPath)
@@ -178,7 +187,7 @@ export class info {
 
 export class containsOBj {
 
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -205,7 +214,7 @@ export class containsOBj {
 
 
 export class containedBy {
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -232,7 +241,7 @@ export class containedBy {
 
 
 export class overlap {
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 		let _rowFieldValue
 
 		try {
@@ -244,13 +253,13 @@ export class overlap {
 			return false
 		}
 
-		return _rowFieldValue.some(r=> arg.includes(r))
+		return _rowFieldValue.some((r: any) => arg.includes(r))
 	}
 }
 
 
 export class len {
-	static validate({fieldName, arg, rowFieldValue = [], row, fieldPath, customData}) {
+	static validate({fieldName, arg, rowFieldValue = [], row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -268,7 +277,7 @@ export class len {
 }
 
 export class hasKey {
-	static validate({fieldName, arg, rowFieldValue = [], row, fieldPath, customData}) {
+	static validate({fieldName, arg, rowFieldValue = [], row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -294,7 +303,7 @@ export class hasKey {
 }
 
 export class hasAnyKeys {
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -307,7 +316,7 @@ export class hasAnyKeys {
 			return false
 		}
 
-		return _rowFieldValue.some(key=> !arg.includes(key))
+		return _rowFieldValue.some((key: any) => !arg.includes(key))
 	}
 }
 
@@ -316,7 +325,7 @@ export class hasAnyKeys {
  * @returns true when all of the given keys are in the data
  */
 export 	class hasKeys {
-	static validate(fieldObj, keys,  row) {
+	static validate(fieldObj:any, keys: any[],  row: payload) {
 
 
 		for (let fieldName of keys) {
@@ -333,7 +342,7 @@ export 	class hasKeys {
 
 
 export class isNull {
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 
 		let _rowFieldValue
 
@@ -352,7 +361,7 @@ export class isNull {
 
 // object
 export class objectIsnull {
-	static validate({fieldName, arg,  row, fieldPath, customData}) {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload) {
 
 		let rowFieldValue;
 
@@ -387,7 +396,7 @@ export class objectIsnull {
 }
 
 export class objectEq {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let _rowFieldValue
 
@@ -417,7 +426,7 @@ export class objectEq {
 }
 
 export class objectContains {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -447,7 +456,7 @@ export class objectContains {
 
 
 export class objectContains_by {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 		const keyCount = Object.keys(arg).length
@@ -482,7 +491,7 @@ export class objectContains_by {
 }
 
 export class objectHasKey {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -505,7 +514,7 @@ export class objectHasKey {
 
 
 export class objectHasKeys {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -532,7 +541,7 @@ export class objectHasKeys {
 
 
 export class objectHasnyKeys {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -560,7 +569,7 @@ export class objectHasnyKeys {
 // array shit
 
 export class ArrayFieldEq {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 		let _rowFieldValue
 
 		try {
@@ -589,7 +598,7 @@ export class ArrayFieldEq {
 }
 
 export class ArrayFieldContains {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -618,7 +627,7 @@ export class ArrayFieldContains {
 	}
 }
 export class ArrayFieldContains_by {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -647,7 +656,7 @@ export class ArrayFieldContains_by {
 	}
 }
 export class ArrayFieldContains_overlap {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 
@@ -676,7 +685,7 @@ export class ArrayFieldContains_overlap {
 	}
 }
 export class ArrayFieldContains_len {
-	static validate({fieldName, arg,  row, fieldPath, customData}):boolean {
+	static validate({fieldName, arg,  row, fieldPath, customData}: payload):boolean {
 
 		let rowValue;
 

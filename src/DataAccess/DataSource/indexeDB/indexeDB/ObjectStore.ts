@@ -5,7 +5,7 @@ export class ObjectStore {
 
   schema: ITableSchema
   private isTransactionInProgress = false;
-  private db:  IDBDatabase;
+  private db:  IDBDatabase = null as any;
   private transactions: DatabaseTransaction[] =  []
   
   transactionFinish = (tableName: string, hasWriteTransaction:boolean) => {}
@@ -75,7 +75,7 @@ export class ObjectStore {
         await loop()
       } else {
         const lastTransaction: DatabaseTransaction = this.currentTransaction
-        this.currentTransaction = null
+        this.currentTransaction = null as any
         this.isTransactionInProgress = false
         this.endProcessTransactionQueue(lastTransaction)
 

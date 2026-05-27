@@ -11,7 +11,7 @@ class QueryBuilderUpdateHandler {
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.update({table: tableName, query:QueryBuilder.query})({
-        onsuccess:(data) => {
+        onsuccess:(data: any) => {
 
         },
         onerror:() => {
@@ -31,7 +31,7 @@ class QueryBuilderUpdateHandler {
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.updateMany({table: tableName, query:QueryBuilder.query})({
-        onsuccess:(data) => {
+        onsuccess:(data: any) => {
 
         },
         onerror:() => {

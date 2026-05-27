@@ -33,7 +33,7 @@ class SchemaGenerator {
     }
 
     if(this.hasBeenProcessedDb(entries.databaseName)) {
-      return
+      return databaseSchema
     }
 
     this.processingDatabase(entries.databaseName)
@@ -51,7 +51,7 @@ class SchemaGenerator {
   }
 
 
-  private generateTableSchema(modelClassRepresentations: typeof Model<any>, databaseName) {
+  private generateTableSchema(modelClassRepresentations: typeof Model<any>, databaseName: string) {
 
     const tablesSchemas: ITableSchema[] = []
     const middleTablesSchemas = []
@@ -86,7 +86,7 @@ class SchemaGenerator {
         keyPath: fieldName,
         options: {
           unique: Field.unique,
-          type: null
+          type: null as any
         },
         className: Field.fieldName,
         fieldAttributes: Object.assign({}, Field),
@@ -115,7 +115,7 @@ class SchemaGenerator {
     return {tablesSchemas, middleTablesSchemas}
   }
 
-  private getModalName(modelName, databaseName, _Model: typeof Model<any>) {
+  private getModalName(modelName: string, databaseName: string, _Model: typeof Model<any>) {
 
 
     if(!this.hasRegisterModelName(databaseName, _Model)) {
@@ -124,7 +124,7 @@ class SchemaGenerator {
         return modelName
       } else {
         const hasCode = hashCode(_Model.toString())
-        this.registerModelName(databaseName, _Model, hasCode)
+        this.registerModelName(databaseName, _Model, hasCode as any)
         return hasCode
       }
     } else {
@@ -132,27 +132,27 @@ class SchemaGenerator {
     }
   }
 
-  private getModelName (databaseName,  _Model: typeof Model<any>) {
-    const hasCode = hashCode(_Model.toString())
-    return this.databases[databaseName].tableHash[hasCode]
+  private getModelName (databaseName: string,  _Model: typeof Model<any>) {
+    const hasCode = hashCode(_Model.toString());
+    return (this.databases as any)[databaseName].tableHash[hasCode as any]
   }
 
-  private registerModelName(databaseName, _Model: typeof Model<any>, name) {
-    const hasCode = hashCode(_Model.toString())
-    this.databases[databaseName].tableHash[hasCode] = name
+  private registerModelName(databaseName: string, _Model: typeof Model<any>, name: string) {
+    const hasCode = hashCode(_Model.toString());
+    (this.databases as any)[databaseName].tableHash[hasCode as any] = name
     return this.databases[databaseName].tablesNames.push(name)
   }
 
-  private isModelNameAvailable(databaseName, name) {
+  private isModelNameAvailable(databaseName: string, name: string) {  
     return !this.databases[databaseName].tablesNames.includes(name)
   }
 
-  private hasRegisterModelName(databaseName, _Model: typeof Model<any>) {
+  private hasRegisterModelName(databaseName: string, _Model: typeof Model<any>) {
     const hasCode = hashCode(_Model.toString())
-    return this.databases[databaseName].tableHash[hasCode]
+    return (this.databases as any)[databaseName].tableHash[hasCode as any]
   }
 
-  private makePrimary(fields, attributes) {
+  private makePrimary(fields: any, attributes: any) {
     const idFieldName = attributes?.primaryKey?.shift()
     return {
       keyPath: idFieldName || 'id', //by default primary key is id

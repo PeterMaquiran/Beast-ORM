@@ -1,7 +1,7 @@
 
 class Logger {
   log() {}
-  error(error) {
+  error(error: any) {
     try {
       console.error(error)
     } catch (e) {}

@@ -16,4 +16,11 @@ export const models = {
   ...getter
 }
 
-window["models"] = models
+declare global {
+  interface Window {
+    models: typeof models
+  }
+}
+
+window.models = models
+

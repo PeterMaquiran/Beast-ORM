@@ -79,7 +79,7 @@ export class DatabaseConnector {
 
   }
 
-  closeDatabase(db) {
+  closeDatabase(db: IDBDatabase) {
     db.close();
   }
 }

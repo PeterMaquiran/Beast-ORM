@@ -22,33 +22,33 @@ export class TriggerManager {
 
   constructor() {}
 
-  createShareSubscription(eventName, subscriptionIdFromDataLayer) {
+  createShareSubscription(eventName: string, subscriptionIdFromDataLayer: string) {
     if(!this.subscription[eventName][subscriptionIdFromDataLayer]) {
       this.subscription[eventName][subscriptionIdFromDataLayer] = {}
     }
   }
 
-  registerTrigger(eventName) {
+  registerTrigger(eventName: string) {
     if (!this.subscription[eventName]) {
       this.subscription[eventName] = {};
     }
   }
 
-  associateDispatchUIDToTrigger(eventName, dispatchUID, subscriptionIdFromDataLayer) {
+  associateDispatchUIDToTrigger(eventName: string, dispatchUID: string, subscriptionIdFromDataLayer: string) {
     this.subscription[eventName][subscriptionIdFromDataLayer][dispatchUID] = true
   }
 
-  hasSubscription(eventName) {
+  hasSubscription(eventName: string) {
     return Object.keys(this.subscription?.[eventName] || {})?.length >= 1
   }
 
-  findTriggerToShared(eventName) {
+  findTriggerToShared(eventName: string) {
     const firstSubscription = Object.keys(this.subscription[eventName])[0]
 
     return firstSubscription
   }
 
-  findDispatchUID(eventName, dispatchUID) {
+  findDispatchUID(eventName: string, dispatchUID: string) {
     for(const [subscriptionIdFromDataLayer, value] of Object.entries(this.subscription[eventName])) {
       if(value[dispatchUID]) {
         return {subscriptionIdFromDataLayer, dispatchUID}
@@ -56,7 +56,7 @@ export class TriggerManager {
     }
   }
 
-  listeningToSubscription(eventName, callback: Function, triggerRemove: Function) {
+  listeningToSubscription(eventName: string, callback: Function, triggerRemove: Function) {
 
     const id = uniqueGenerator()
 
@@ -66,7 +66,7 @@ export class TriggerManager {
       dispatchUID: id,
       disconnect:() => {
 
-        const { subscriptionIdFromDataLayer } = this.findDispatchUID(eventName, id)
+        const { subscriptionIdFromDataLayer } = this.findDispatchUID(eventName, id) as { subscriptionIdFromDataLayer: string }
 
         delete this.subscription[eventName][subscriptionIdFromDataLayer][id]
 
@@ -82,7 +82,7 @@ export class TriggerManager {
     }
   }
 
-  executeTriggers(eventName, subscriptionIdFromDataLayer) {
+  executeTriggers(eventName: string, subscriptionIdFromDataLayer: string) {
 
     try {
 

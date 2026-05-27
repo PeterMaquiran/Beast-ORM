@@ -13,8 +13,8 @@ export declare class methodFunction {
     private TableSchema;
     rows: any[];
     constructor(arg: any, TableSchema: any);
-    cursor(row: object, resolve?, limit?): Promise<any[]>;
-    cursorWithLimit(row: object, resolve?, limit?): Promise<any[]>;
+    cursor(row: object, resolve?: any, limit?: any): Promise<any[]>;
+    cursorWithLimit(row: object, resolve?: any, limit?: any): Promise<any[]>;
     run(rows: any[]): Promise<any[]>;
 }
 

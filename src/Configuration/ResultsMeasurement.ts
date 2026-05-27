@@ -1,7 +1,7 @@
-import { registerPipe } from "../Utility/Either/APIresponse.js"
+import { registerPipe } from "../Utility/Either/APIResponse.js"
 
 
-function executionTime ({createdDate, THIS}) {
+function executionTime ({createdDate, THIS}: {createdDate: any, THIS: any}) {
   THIS.executionTime = () => {
     return (new Date() as any) - createdDate
   }

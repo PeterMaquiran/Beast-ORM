@@ -1,13 +1,13 @@
 export class field{
-	fieldName: FieldKeys
-	primaryKey?
+	fieldName: FieldKeys = null as any
+	primaryKey?: boolean
 	maxLength?:number | undefined
 	minLength?:number | undefined
 	choices?: any[] | undefined
-	type: number
+	type: number = 0
 	blank?: boolean
 	default?: any
-	unique: boolean
+	unique: boolean = false
 	foreignKey?: boolean
 	model?: field
 }

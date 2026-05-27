@@ -36,7 +36,7 @@ export class DatabaseService {
 
       this.db.onclose = async () => {
 
-        let currentVersion = this.db.version
+        let currentVersion = (this as any).db.version
         currentVersion++
 
         const newSchemaVersion = this.schema
@@ -50,7 +50,7 @@ export class DatabaseService {
 
     for (const table of this.schema.table) {
 
-      const found = this.db.objectStoreNames.contains(table.name)
+      const found = (this as any).db.objectStoreNames.contains(table.name)
 
       if(!found) {
         return false
@@ -76,7 +76,7 @@ export class DatabaseService {
     const objectStore = this.objectStore[objectStoreName]
 
     if(!objectStore.hasActiveTransaction()) {
-      objectStore.setDbInstance(this.db)
+      objectStore.setDbInstance(this.db as any)
     }
 
     this.executingTransaction[objectStoreName] = true
@@ -84,7 +84,7 @@ export class DatabaseService {
     return objectStore
   }
 
-  transactionFinish = (TableName) => {
+  transactionFinish = (TableName: string) => {
     delete this.executingTransaction[TableName]
 
     if(Object.keys(this.executingTransaction).length == 0) {
@@ -93,15 +93,15 @@ export class DatabaseService {
     }
   }
 
-  runTrigger (TableName, hasWriteTransaction:boolean) {
+  runTrigger (TableName: string, hasWriteTransaction:boolean) {
     this.tigers.executeTriggers(DBEventsTrigger.onCompleteReadTransaction, TableName)
   }
 
-  registerTrigger(tableName, data,  callback: IReturnTriggerObject) {
+  registerTrigger(tableName: string, data: any,  callback: IReturnTriggerObject) {
     this.tigers.subscribe(DBEventsTrigger.onCompleteReadTransaction, tableName, callback)
   }
 
-  UnRegisterTrigger(tableName, subscriptionId,  callback: IReturnTriggerObject) {
+  UnRegisterTrigger(tableName: string, subscriptionId: any,  callback: IReturnTriggerObject) {
     this.tigers.unsubscribe(DBEventsTrigger.onCompleteReadTransaction, tableName, subscriptionId, callback)
   }
 }

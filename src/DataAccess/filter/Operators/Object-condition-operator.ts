@@ -3,7 +3,7 @@ import { argsAttributes, Field, value } from './args-attributes.js';
 
 export class ObjectConditionOperator {
 
-	row
+	row: any
 
 	constructor(private TableSchema:ITableSchema, private args: argsAttributes) {
 
@@ -11,7 +11,7 @@ export class ObjectConditionOperator {
 
 	}
 
-	run(row): boolean | any {
+	run(row: any): boolean | any {
 		this.row = row
 
 		for(const arg of this.args.value) {
@@ -25,7 +25,7 @@ export class ObjectConditionOperator {
     return false
 	}
 
-	private execute(objOperator ): boolean {
+	private execute(objOperator: any): boolean {
 
 		for(let objOperatorFieldName in objOperator) {
 
@@ -38,7 +38,7 @@ export class ObjectConditionOperator {
 			const fieldClassName = field.fieldClassName
 			const operator = field.operator
 
-			const customData = field.customData({row:this.row, fieldPath})
+			const customData = field.customData?.({row:this.row, fieldPath})
 
 			const arg = operationArg;
 

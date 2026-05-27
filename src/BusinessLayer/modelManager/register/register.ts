@@ -12,7 +12,7 @@ class ModelRegistration {
     this.databases[databaseName] = database
   }
 
-  getDatabase(databaseName) {
+  getDatabase(databaseName: string) {
     return this.databases[databaseName]
   }
 }

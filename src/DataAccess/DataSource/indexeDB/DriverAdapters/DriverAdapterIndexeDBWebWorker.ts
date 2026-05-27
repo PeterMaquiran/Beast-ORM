@@ -5,7 +5,7 @@ import { IData, IDataInsert, IDatabaseStrategy, IMigrations, IReturnObject, IRet
 export class IndexedDBWorkerStrategy implements IDatabaseStrategy {
 
   databaseName: string
-  tableName: string
+  tableName: string = ''
   private myWorker:  Worker
   callbacks: {[key: string]: Object} = {}
 
@@ -15,8 +15,8 @@ export class IndexedDBWorkerStrategy implements IDatabaseStrategy {
     this.myWorker = new Worker(new URL('./worker/worker.js', import.meta.url),{ type: "module" });
 
     this.myWorker.onmessage =  (oEvent) => {
-      const data = oEvent.data
-      this.callbacks[data.UUID][data.callbackName](data.data)
+      const data = oEvent.data as any
+      (this as any).callbacks[data.UUID][data.callbackName](data.data as any)
     }
 
     this.myWorker.onerror = (error) => {
@@ -26,11 +26,11 @@ export class IndexedDBWorkerStrategy implements IDatabaseStrategy {
     this.myWorker.postMessage({databaseName})
 	}
 
-  static handler(instance: IndexedDBWorkerStrategy, callbacks:IReturnObject, data: any, methodName) {
+  static handler(instance: IndexedDBWorkerStrategy, callbacks:IReturnObject, data: any, methodName: any) {
     const UUID =  uniqueGenerator()
     const originalDone = callbacks.done
 
-    callbacks.done =  (dataFromWorker) => {
+    callbacks.done =  (dataFromWorker: any) => {
       originalDone(dataFromWorker)
       delete instance.callbacks[UUID]
     }
@@ -40,48 +40,48 @@ export class IndexedDBWorkerStrategy implements IDatabaseStrategy {
   }
 
   update(data: IData): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
 
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "update")
     }
   }
   updateMany(data: IData): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "updateMany")
     }
   }
   insert(data: IDataInsert): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "insert")
     }
   }
   insertMany(data: IDataInsert): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "insertMany")
     }
   }
   delete(data: IData): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "delete")
     }
   }
   deleteMany(data: IData): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "deleteMany")
     }
   }
   select(data: IData): (returnObject: IReturnSelectObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "select")
     }
   }
   selectMany(data: IData): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "selectMany")
     }
   }
   migrate(migrate: IDatabaseSchema): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, migrate, "migrate")
     }
   }
@@ -91,13 +91,13 @@ export class IndexedDBWorkerStrategy implements IDatabaseStrategy {
       IndexedDBWorkerStrategy.handler(this, callbacks, migrate, "prepare")
     }
   }
-  RemoveTrigger(data): (returnObject: IReturnObject) => void {
-    return async (callbacks: IReturnTriggerObject) => {
+  RemoveTrigger(data: any): (returnObject: IReturnObject) => void {
+    return async (callbacks: any) => {
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "RemoveTrigger")
     }
   }
 
-  addTrigger(data): (returnObject: IReturnTriggerObject) => void {
+  addTrigger(data: any): (returnObject: IReturnTriggerObject) => void {
     return async (callbacks: IReturnTriggerObject) => {
 
       IndexedDBWorkerStrategy.handler(this, callbacks, data, "addTrigger")

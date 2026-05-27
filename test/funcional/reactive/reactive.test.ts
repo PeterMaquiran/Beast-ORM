@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 import * as _Fields from '../../../src/models/field/fields'
 import { models as  modelsType } from '../../../src/index'
 import { uniqueGenerator } from '../../../src/utils'

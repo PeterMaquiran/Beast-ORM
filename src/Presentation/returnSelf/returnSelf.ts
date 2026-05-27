@@ -1,7 +1,7 @@
 import { ORM } from "../../BusinessLayer/beastOrm.js"
 import { Model } from "../Api"
 import { dataParameters } from "../../BusinessLayer/modelManager/dataParameters.js";
-import { APIError, APIOk, APIResponse } from "../../Utility/Either/APIresponse.js";
+import { APIError, APIOk, APIResponse } from "../../Utility/Either/APIResponse.js";
 import { FormValidationError } from "../../BusinessLayer/validation/fields/allFields.type.js";
 
 /**
@@ -13,7 +13,7 @@ export class returnSelf {
    * @param param0 - An object with query-related configuration.
    * @returns An object with query-related methods.
    */
-  static object = <T>(queryBuilder, model: typeof Model) => {
+  static object = <T>(queryBuilder: any, model: typeof Model) => {
     return {
       execute: async (): Promise<APIResponse<T[], FormValidationError>> => {
 
@@ -30,7 +30,7 @@ export class returnSelf {
           return APIOk(result.value)
         }
       },
-      update: async(params): Promise<APIResponse<number, FormValidationError>> => {
+      update: async(params: any): Promise<APIResponse<number, FormValidationError>> => {
 
         let data
         if(params) {

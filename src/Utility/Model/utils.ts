@@ -3,24 +3,14 @@ import { Model } from "../../Presentation/Api.js"
 
 export function argHasId(TableSchema: ITableSchema, args:Object): Boolean {
   const idFieldName = TableSchema.id.keyPath
-  return args[idFieldName]
+  return (args as any)[idFieldName] as boolean
 }
 
 
 export function getArgId(TableSchema: ITableSchema, args:Object): Boolean {
   const idFieldName = TableSchema.id.keyPath
-  return args[idFieldName]
+  return (args as any)[idFieldName] as boolean
 }
-
-export function getIdObject(TableSchema: ITableSchema, args:Object): Object {
-  const idFieldName = TableSchema.id.keyPath
-
-  const filter = {}
-  filter[idFieldName] = this[idFieldName]
-
-  return filter
-}
-
 
 export function getArgIdWithT(model: typeof Model<any> |  Model<any>, args:Object): string | number {
 
@@ -29,7 +19,7 @@ export function getArgIdWithT(model: typeof Model<any> |  Model<any>, args:Objec
   const idFieldName = TableSchema.id.keyPath
 
 
-  return args[idFieldName]
+  return (args as any)[idFieldName] as string | number
 }
 
 
@@ -38,8 +28,8 @@ export function getIdObjectWithT(model: typeof Model<any> |  Model<any>, args:Ob
   const TableSchema: ITableSchema = _model.getTableSchema()
   const idFieldName = TableSchema.id.keyPath
 
-  const filter = {}
-  filter[idFieldName] = args[idFieldName]
+  const filter: any = {};
+  (filter as any)[idFieldName] = (args as any)[idFieldName]; 
 
   return filter
 }

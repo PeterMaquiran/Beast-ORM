@@ -17,11 +17,11 @@ class QueryBuilderInsertHandler {
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.insert({table:tableName, rows:dataToInsert})({
-        onsuccess:(data) => {
+        onsuccess:(data: any) => {
           const id = data.data;
-          const index = data.index
+          const index: number = data.index;
 
-          arrayOfDataBackup[index][idFieldName] =  id
+          (arrayOfDataBackup[index as any] as any)[idFieldName as string] =  id
 
           const newInstanceOfModel = new model()
 
@@ -29,7 +29,7 @@ class QueryBuilderInsertHandler {
 
           resolve(ok(newInstanceOfModel as any))
         },
-        onerror:(_error) => {
+        onerror:(_error: any) => {
           const errorCause = new ConstraintError({message: _error})
           const errorFamily = new TransactionAbortion()
 
@@ -48,7 +48,7 @@ class QueryBuilderInsertHandler {
   async INSERTMany<T>(DatabaseStrategy: IDatabaseStrategy, QueryBuilder: QueryBuilder,  arrayOfDataBackup: Object[]): Promise<Either<T,TransactionAbortion>> {
 
     const dataToInsert = QueryBuilder.query.values
-    const result = []
+    const result: any[] = []
     const tableName = QueryBuilder.query.table
     const model = QueryBuilder.model
     const schema: ITableSchema = model[RM.getTableSchema]()
@@ -56,16 +56,16 @@ class QueryBuilderInsertHandler {
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.insertMany({table:tableName, rows:dataToInsert})({
-        onsuccess:(data) => {
+        onsuccess:(data: any) => {
           const id = data.data;
-          const index = data.index
-          arrayOfDataBackup[index][idFieldName] =  id
+          const index: number = data.index;
+          (arrayOfDataBackup[index as any] as any)[idFieldName as string] =  id
 
           const newInstanceOfModel = new model()
           Object.assign(newInstanceOfModel, arrayOfDataBackup[index])
           result.push(newInstanceOfModel)
         },
-        onerror:(_error) => {
+        onerror:(_error: any) => {
           const errorCause = new ConstraintError({message: _error})
           const errorFamily = new TransactionAbortion()
 

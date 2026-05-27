@@ -29,7 +29,7 @@ export class argsAttributes {
     value: Array<FieldsMap<string, Field>>  = []
     schemeFields: AttributesMap<string, FieldSchema> = {} = {}
 
-    constructor(args, private TableSchema:ITableSchema) {
+    constructor(args: any, private TableSchema:ITableSchema) {
 
         for( const field of this.TableSchema.fields) {
 			this.schemeFields[field.name] = field
@@ -85,14 +85,14 @@ export class argsAttributes {
                 fieldPath = element.join('.')
 
                 if(OperatorsKeysArray.includes(operation)) {
-                    arg = condition[field];
+                    arg = (condition as any)[field];
                 } else {
                     throw('operator')
                 }
 
-                const fieldClassName = this.detectClassName(fieldName)
+                const fieldClassName = this.detectClassName(fieldName) as FieldKeys
 
-                newObject[field] = {
+                (newObject as any)[field] = {
                     fieldName: fieldName,
                     fieldPath: fieldPath,
                     operation: operation,
@@ -102,9 +102,9 @@ export class argsAttributes {
                 }
 
                 if(fieldClassName == 'indexedDBArrayField' || fieldClassName == 'indexedDBJsonField') {
-                    newObject[field]['customData']  = info.run
+                    (newObject as any)[field]['customData']  = info.run
                 } else {
-                    newObject[field]['customData']  = () => {}
+                    (newObject as any)[field]['customData']  = () => {}
                 }
 
             }
@@ -114,30 +114,30 @@ export class argsAttributes {
         }) as any
     }
 
-    private detectClassName(fieldName) {
-        return this.schemeFields[fieldName].className
+    private detectClassName(fieldName: string) {
+        return this.schemeFields[fieldName]?.className
     }
 
-    private detectOperator(fieldClassName, operation, fieldName) {
+    private detectOperator(fieldClassName: FieldKeys, operation: OperatorKeys, fieldName: string) {
         try {
             if(fieldClassName == 'indexedDBJsonField') {
-                return ObjOperatorOverwrite[operation]
+                return (ObjOperatorOverwrite as any)[operation]
             }
             else if(fieldClassName == 'indexedDBArrayField') {
-                return ArrOperatorOverwrite[operation]
+                return (ArrOperatorOverwrite as any)[operation]
             }
             else {
-                return operator[operation]
+                return (operator as any)[operation]
             }
         } catch (err) {
             throw('Field '+ fieldName +' does not exit on the table'+ err)
         }
     }
 
-    private argsPrettyTransform(args) {
-        const conditions = []
+    private argsPrettyTransform(args: any) {
+        const conditions: any[] = []
 
-        const loop =  (o) => {
+        const loop =  (o: any) => {
             // https://stackoverflow.com/a/38597076/14115342
             const condition: any = {}
 

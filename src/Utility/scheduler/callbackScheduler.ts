@@ -68,7 +68,7 @@ export class CallbackScheduler {
   executeNextCallback(): void {
     if (this.running && this.callbackQueue.length > 0) {
       const callback = this.callbackQueue.shift();
-      callback();
+      callback?.();
       this.executeNextCallback(); // Execute the next callback
     }
   }

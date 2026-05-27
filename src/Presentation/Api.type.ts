@@ -1,7 +1,7 @@
 import { ItemNotFound } from "../BusinessLayer/queryBuilderHandler/queryErrorHandler.js";
 import { FormValidationError } from "../BusinessLayer/validation/fields/allFields.type.js";
 import { TableSchema } from "../DataAccess/DataSource/indexeDB/indexeDB/resource/type.js";
-import { APIResponse } from "../Utility/Either/APIresponse.js";
+import { APIResponse } from "../Utility/Either/APIResponse.js";
 
 export declare class IModel<T> {
   /**
@@ -9,7 +9,7 @@ export declare class IModel<T> {
    * @param params - The filter parameters for the query.
    * @returns A promise that resolves with the query results.
    */
-  save(params: any)
+  save(params: any): Promise<APIResponse<number, FormValidationError>>
   static get<T>(): Promise<T | null>;
   /**
    * Retrieve all data of the current model from the database.

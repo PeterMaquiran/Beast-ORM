@@ -2,23 +2,23 @@ import { IndexedDBStrategy } from "../DriverAdapterIndexedDB.js";
 
 let Strategy: IndexedDBStrategy
 
-function sendMessage(data) {
+function sendMessage(data: any) {
   postMessage(data)
 }
 
-function generateCallbacks(UUID) {
+function generateCallbacks(UUID: any) {
   return  {
-    onsuccess:(data) => { sendMessage({callbackName: 'onsuccess',UUID, data})  } ,
-    onerror:(data) => { sendMessage({callbackName: 'onerror',UUID, data}) } ,
-    notFound:(data) => { sendMessage ({callbackName: 'notFound',UUID, data})},
-    done:(data) => { sendMessage ({callbackName: 'done',UUID, data}) } ,
-    stream:(data) => { sendMessage ({callbackName: 'stream',UUID, data}) }
+    onsuccess:(data: any) => { sendMessage({callbackName: 'onsuccess',UUID, data})  } ,
+    onerror:(data: any) => { sendMessage({callbackName: 'onerror',UUID, data}) } ,
+    notFound:(data: any) => { sendMessage ({callbackName: 'notFound',UUID, data})},
+    done:(data: any) => { sendMessage ({callbackName: 'done',UUID, data}) } ,
+    stream:(data: any) => { sendMessage ({callbackName: 'stream',UUID, data}) }
   }
 }
 
-let onmessageHandler = (oEvent) => {}
+let onmessageHandler = (oEvent: any) => {}
 
-function onmessageHandlerFirstMessage(oEvent) {
+function onmessageHandlerFirstMessage(oEvent: any) {
 
   const { databaseName } = oEvent.data
 
@@ -27,11 +27,11 @@ function onmessageHandlerFirstMessage(oEvent) {
   onmessageHandler = mainOnmessageHandler
 }
 
-function mainOnmessageHandler(oEvent) {
+function mainOnmessageHandler(oEvent: any) {
   const { UUID, methodName, data } = oEvent.data
-  const callbacks = generateCallbacks(UUID)
+  const callbacks = generateCallbacks(UUID) as any
 
-  Strategy[methodName](data)(callbacks)
+  (Strategy as any)[methodName](data)(callbacks)
 }
 
 onmessageHandler = onmessageHandlerFirstMessage

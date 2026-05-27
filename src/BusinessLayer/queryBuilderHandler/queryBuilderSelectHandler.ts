@@ -20,7 +20,7 @@ class QueryBuilderSelectHandler {
         notFound:() => {
           resolve(error(new ItemNotFound(QueryBuilder.query)))
         },
-        done:(data) => {
+        done:(data: any[]) => {
 
           const newInstanceOfModel = new model()
 

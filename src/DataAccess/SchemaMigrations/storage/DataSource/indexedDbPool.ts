@@ -1,10 +1,10 @@
 
 class indexedDBFIFO {
   dbName
-  db
+  db: IDBDatabase = null as any
   transactionQueue = []
   isTransactionInProgress = false
-  txInstance
+  txInstance: IDBTransaction = null as any
 
 
   constructor(dbName: string) {
@@ -48,7 +48,7 @@ class indexedDBFIFO {
       return;
     }
 
-    this.db = await this.openDatabase()
+    this.db = await this.openDatabase() as IDBDatabase
 
 
     let loop = () => {
@@ -76,8 +76,8 @@ class indexedDBFIFO {
 
             (this.txInstance )?.commit();
             this.db.close()
-            this.db = null
-            this.txInstance = null
+            this.db = null as any
+            this.txInstance = null as any
           }
         }
       }
@@ -87,13 +87,13 @@ class indexedDBFIFO {
 
   }
 
-  async executeTransaction(transaction) {
+  async executeTransaction(transaction: any) {
     return new Promise((resolve, reject) => {
       let objectStore = transaction.storeName;
       let mode = transaction.mode;
       let operation = transaction.operation;
 
-      let request = this.txInstance.objectStore("database")[operation](transaction.data);
+      let request = (this.txInstance.objectStore("database") as any)[operation](transaction.data);
 
       // console.log({operation, transaction:transaction.data})
 
@@ -103,16 +103,16 @@ class indexedDBFIFO {
         // console.log({request: request.result})
       };
 
-      request.onerror = (error) => {
+      request.onerror = (error: any) => {
         reject(error);
       };
     });
   }
 
-  async enqueueTransaction({storeName, mode, operation, data, callback}) {
-    let transaction = { storeName, mode, operation, data, callback };
+  async enqueueTransaction({storeName, mode, operation, data, callback}: {storeName: string, mode: string, operation: string, data: any, callback: any}) {
+    let transaction: any = { storeName, mode, operation, data, callback };
 
-    this.transactionQueue.push(transaction);
+    this.transactionQueue.push(transaction as never);
 
     if (!this.isTransactionInProgress) {
       this.processTransactionQueue();
@@ -120,16 +120,16 @@ class indexedDBFIFO {
     }
   }
 
-  async insert(storeName, data, callback) {
+  async insert(storeName: string, data: any, callback: any) {
     // console.log("this.enqueueTransaction")
     return this.enqueueTransaction({storeName, mode:'readwrite', operation:'add', data:data, callback});
   }
 
-  async get(storeName, key, callback) {
+  async get(storeName: string, key: any, callback: any) {
     return this.enqueueTransaction({storeName, mode:'readwrite', operation:'get', data:key, callback});
   }
 
-  async getAll(storeName, callback) {
+  async getAll(storeName: string, callback: any) {
     return this.enqueueTransaction({storeName, mode:'readonly', operation:'getAll', callback, data:null});
   }
 }
@@ -138,8 +138,8 @@ class indexedDBFIFO {
 const db = new indexedDBFIFO("Migrations")
 export class MigrationsModel {
 
-  databaseName: string
-  databaseVersion: number
+  databaseName: string = ''
+  databaseVersion: number = 0
   migrations: any[] = []
 
   constructor(data = {}){
@@ -149,10 +149,10 @@ export class MigrationsModel {
   DB() { return MigrationsModel.DB() }
   static DB() { return db }
 
-  static async insert(data) {
+  static async insert(data: any) {
     return new Promise((resolve)=> {
       // console.log(" this.DB().insert")
-      this.DB().insert("objectStore", data, (data)=> {
+      this.DB().insert("objectStore", data, (data: any) => {
         resolve(data)
       })
     })
@@ -161,15 +161,15 @@ export class MigrationsModel {
 
   async save() {
     return new Promise((resolve)=> {
-      this.DB().insert("objectStore", this, (data)=> {
+      this.DB().insert("objectStore", this, (data: any) => {
         resolve(data)
       })
     })
   }
 
-  static async get(key) {
+  static async get(key: any) {
     return new Promise((resolve) => {
-      this.DB().get("objectStore", key, (data)=> {
+      this.DB().get("objectStore", key, (data: any) => {
         resolve(data)
       })
     })
@@ -177,7 +177,7 @@ export class MigrationsModel {
 
   static getAll(): Promise<any[]> {
     return new Promise((resolve)=> {
-      this.DB().getAll("objectStore", (data)=> {
+      this.DB().getAll("objectStore", (data: any) => {
         resolve(data)
       })
     })

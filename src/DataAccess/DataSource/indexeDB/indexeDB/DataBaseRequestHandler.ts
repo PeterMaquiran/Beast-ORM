@@ -21,5 +21,5 @@ class DataBaseRequestHandlerOnRestStrategy implements DataBaseRequestHandlerStra
 
 
 interface DataBaseRequestHandlerStrategy {
-  enqueueTransaction()
+  enqueueTransaction(): void
 }

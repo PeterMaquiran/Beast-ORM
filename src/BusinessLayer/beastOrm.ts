@@ -84,7 +84,7 @@ class BeastORM {
   }
 
   async executeInsertionQuery<PModel>(QueryBuilder: QueryBuilder, Model:Object):Promise<Either<PModel, FormValidationError | TransactionAbortion>>   {
-    const tableSchema: ITableSchema = Model[RM.getTableSchema]()
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
     const databaseName = tableSchema.databaseName
 
     const database = modelRegistration.getDatabase(databaseName)
@@ -98,7 +98,7 @@ class BeastORM {
       const arrayOfDataBackup = [...QueryBuilder.query.values]
 
 
-      const validator: (value: Object) => EitherFormValidationError  = Model[RM.validator]
+      const validator: (value: Object) => EitherFormValidationError  = (Model as any)[RM.validator]
 
       for( const object in arrayOfData) {
 
@@ -125,7 +125,7 @@ class BeastORM {
 
 
   async executeInsertionManyQuery<PModel>(QueryBuilder: QueryBuilder, Model:Object):Promise<Either<PModel, FormValidationError | TransactionAbortion>>   {
-    const tableSchema: ITableSchema = Model[RM.getTableSchema]()
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
     const databaseName = tableSchema.databaseName
 
     const database = modelRegistration.getDatabase(databaseName)
@@ -141,7 +141,7 @@ class BeastORM {
   }
 
   executeSelectQuery<PModel>(QueryBuilder: QueryBuilder, Model: Object)   {
-    const tableSchema: ITableSchema = Model[RM.getTableSchema]()
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
     const databaseName = tableSchema.databaseName
 
     const database = modelRegistration.getDatabase(databaseName)
@@ -172,7 +172,7 @@ class BeastORM {
 
 
   async executeUpdateQuery<PModel>(QueryBuilder: QueryBuilder, Model:PModel):Promise<Either<number, FormValidationError>>   {
-    const tableSchema: ITableSchema = Model[RM.getTableSchema]()
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
     const databaseName = tableSchema.databaseName
 
     const database = modelRegistration.getDatabase(databaseName)
@@ -190,7 +190,7 @@ class BeastORM {
 
 
   async deleteQuery<PModel>(QueryBuilder: QueryBuilder, Model:PModel):Promise<Either<number, FormValidationError>> {
-    const tableSchema: ITableSchema = Model[RM.getTableSchema]()
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
     const databaseName = tableSchema.databaseName
 
     const database = modelRegistration.getDatabase(databaseName)
@@ -243,7 +243,7 @@ class BeastORM {
 
     const triggerEventName = DBEventsTrigger.onCompleteReadTransaction
     const hasSubscription = table.trigger.hasSubscription(triggerEventName)
-    let subscriptionIdFromDataLayer ;
+    let subscriptionIdFromDataLayer: any;
 
 
     const DatabaseStrategy = database
@@ -253,7 +253,7 @@ class BeastORM {
 
     const triggerRemove = () => {
       DatabaseStrategy.RemoveTrigger({table:tableName, data:subscriptionIdFromDataLayer})({
-        onsuccess:({subscriptionId}) => {},
+        onsuccess:({subscriptionId}: {subscriptionId: any}) => {},
         onerror: () => {},
         done: () => {}
       })
@@ -265,13 +265,13 @@ class BeastORM {
       table.trigger.registerTrigger(triggerEventName)
 
       DatabaseStrategy.addTrigger({table:tableName, data:""})({
-        onsuccess:({subscriptionId}) => {
+        onsuccess:({subscriptionId}: {subscriptionId: any}) => {
           subscriptionIdFromDataLayer = subscriptionId
           table.trigger.createShareSubscription(triggerEventName, subscriptionId)
           table.trigger.associateDispatchUIDToTrigger(triggerEventName,returnObject.dispatchUID,  subscriptionIdFromDataLayer)
 
         },
-        stream: (data) => {
+        stream: (data: any) => {
 
           const subscriptionId = data.subscriptionId
           table.trigger.executeTriggers( triggerEventName, subscriptionId)

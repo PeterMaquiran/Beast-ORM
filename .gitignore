@@ -1,15 +1,4 @@
 node_modules
-dist/src/tsconfig.tsbuildinfo
-test/config/test.json
-.env
-plugin_packages
-src/DBMS
 .vscode
 _src
-dist/tsconfig.tsbuildinfo
-uploads
-public
-index.js
-index.1.js
-uploads
-public1
+playground/dist

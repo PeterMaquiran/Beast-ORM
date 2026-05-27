@@ -1,6 +1,6 @@
 import { AttributesMap, FieldAttributesKeys, FieldKeys, FieldType, FieldsMap } from "../fields/fields.type"
 import { PossibleFieldAttributes } from "../fields/fieldsParameters.type"
-import { APIResponse } from "../../Utility/Either/APIresponse.js";
+import { APIResponse } from "../../Utility/Either/APIResponse.js";
 import { FormValidationError } from "../validation/fields/allFields.type";
 import { BulkDataUniqueFieldError, ItemNotFound } from "../queryBuilderHandler/queryErrorHandler";
 import { TransactionAbortion } from "../../DataAccess/_interface/interface.type";

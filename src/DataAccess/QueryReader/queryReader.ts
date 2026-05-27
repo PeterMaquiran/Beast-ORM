@@ -1,15 +1,15 @@
 import { IQuery } from "../../BusinessLayer/_interface/Apresentation/queryBuilder";
 
 export class QueryReaderSelect implements IQuery {
-  id: string
-  type: string;
-  table: string;
-  values: any[];
-  updateValues: any;
-  where: any[];
-  limit: number;
-  hasIndex: Boolean;
-  isParamsArray: Boolean;
+  id: string = ''
+  type: string = '';
+  table: string = '';
+  values: any[] = [];
+  updateValues: any = {};
+  where: any[] = [];
+  limit: number = 0;
+  hasIndex: Boolean = false;
+  isParamsArray: Boolean = false;
   constructor(Query: IQuery) {
     Object.assign(this, Query)
   }

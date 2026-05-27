@@ -1,6 +1,7 @@
 import { GustPrototype, RealPrototype } from '../../../Presentation/Model/fields/fieldsWrappers.js';
 import { FieldAttributesKeys } from '../../fields/fields.type.js';
 import { AllowedFieldKeysArray, AttributesMap, FieldKeys, FieldKeysArray, FieldType, FieldsMap, field } from './ModalReader.type.js'
+import { Model } from "../../../Presentation/Api";
 
 export class ModelReader {
   /**
@@ -15,7 +16,7 @@ export class ModelReader {
    *   fieldNames: string[],
    * }} - An object containing extracted model information.
    */
-  static read(modelClassRepresentation) {
+  static read(modelClassRepresentation: typeof Model<any>) {
     RealPrototype()
     const classInstance = new modelClassRepresentation();
     GustPrototype()
@@ -56,8 +57,11 @@ export class ModelReader {
    * @param {typeof models.Model} modelClassRepresentation - The class representation of the model.
    * @returns {String}  - Model class name
   */
-  static getModelName (modelClassRepresentation) {
-    return modelClassRepresentation.toString().split('(' || /s+/)[0].split(' ' || /s+/)[1];
+  static getModelName(modelClassRepresentation: typeof Model<any>) {
+    return modelClassRepresentation
+      .toString()
+      .split('(')[0]
+      .split(' ')[1];
   }
 
   /**
@@ -100,7 +104,7 @@ export class ModelReader {
    * @param {string[]} fieldNames - An array of field names.
    * @param {Object} fields - An object containing field information.
    */
-  private static processField(classInstance, fieldName, Field: field, fieldTypes, attributes, fieldNames, fields, falseField) {
+  private static processField(classInstance: any, fieldName: string, Field: field, fieldTypes: any, attributes: any, fieldNames: string[], fields: any, falseField: string[]) {
 
     const type = Field?.fieldName;
     const knownFieldType = this.isKnownFieldType(type);
@@ -123,8 +127,8 @@ export class ModelReader {
    * @param {string} type - The field type to check.
    * @returns {boolean} - True if the field type is known; false otherwise.
    */
-  private static isKnownFieldType(type) {
-    return AllowedFieldKeysArray.includes(type);
+  private static isKnownFieldType(type: string) {
+    return AllowedFieldKeysArray.includes(type as any);
   }
 
   /**
@@ -134,7 +138,7 @@ export class ModelReader {
    * @param {string} type - The type to which the field belongs.
    * @param {string} fieldName - The name of the field.
    */
-  private static addFieldToType(fieldTypes, type, fieldName) {
+  private static addFieldToType(fieldTypes: any, type: string, fieldName: string) {
     if (!fieldTypes[type]) {
       fieldTypes[type] = [];
     }
@@ -148,7 +152,7 @@ export class ModelReader {
    * @param {AttributesMap<FieldAttributesKeys, string[]>} attributes - A map of attributes.
    * @param {string} fieldName - The name of the field.
    */
-  private static processFieldAttributes(Field, attributes, fieldName) {
+  private static processFieldAttributes(Field: any, attributes: any, fieldName: string) {
     for (const [FieldProperty, value] of Object.entries(Field)) {
       if (typeof value !== 'function') {
         this.addFieldToAttribute(attributes, FieldProperty, fieldName);
@@ -163,7 +167,7 @@ export class ModelReader {
    * @param {FieldAttributesKeys} FieldProperty - The attribute to which the field belongs.
    * @param {string} fieldName - The name of the field.
    */
-  private static addFieldToAttribute(attributes, FieldProperty, fieldName) {
+  private static addFieldToAttribute(attributes: any, FieldProperty: string, fieldName: string) {
     if (!attributes[FieldProperty]) {
       attributes[FieldProperty] = [];
     }

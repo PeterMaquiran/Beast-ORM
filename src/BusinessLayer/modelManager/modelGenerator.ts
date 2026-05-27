@@ -17,7 +17,7 @@ class ModelGeneration {
     return models
   }
 
-  private generateGenericModel (ModelName, middleTableSchema: ITableSchema, register:IRegister) {
+  private generateGenericModel (ModelName: string, middleTableSchema: ITableSchema, register:IRegister) {
 
     // console.log("generateGenericModel", middleTableSchema)
     class GenericModel extends  Model<GenericModel> {}
@@ -36,26 +36,26 @@ class ModelGeneration {
       return middleTableSchema
     }
 
-    GenericModel.prototype[RM.getTableSchema] = () => {
+    (GenericModel.prototype as any)[RM.getTableSchema] = () => {
       return middleTableSchema
     }
 
-    GenericModel[RM.validator] = () => {
-      return ok(true)
+    (GenericModel as any)[RM.validator] = () => {
+      return ok(true) as any
     }
 
     for (const [fieldName, info] of Object.entries(middleTableSchema.foreignKey)) {
-      const model = register.models.find( e => e.getTableSchema().name == info.tableName)
-      GenericModel.prototype[fieldName+"F"] = () => {
-        return ForeignKey({model})
+      const model = register.models.find( e => e.getTableSchema().name == info.tableName);
+      (GenericModel.prototype as any)[fieldName+"F"] = () => {
+        return ForeignKey({model: model as any})
       }
     }
 
-    const object = {}
+    const object: any = {}
     for (const [fieldName, info] of Object.entries(middleTableSchema.foreignKey)) {
 
       const model = register.models.find( e => e.getTableSchema().name == info.tableName)
-      object[fieldName] = _RealPrototype.ForeignKey({model: model})
+      object[fieldName as string] = _RealPrototype.ForeignKey({model: model})
 
       Object.defineProperty(GenericModel.prototype, fieldName, {
         get () {

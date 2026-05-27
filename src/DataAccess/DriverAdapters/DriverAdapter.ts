@@ -4,7 +4,7 @@ import { IndexedDBStrategy } from '../DataSource/indexeDB/DriverAdapters/DriverA
  // Context that uses the strategy pattern
 export class DriverAdapter implements IDatabaseStrategy{
   strategy: IDatabaseStrategy
-  constructor(strategy) {
+  constructor(strategy: IDatabaseStrategy) {
     this.strategy = strategy;
   }
   addTrigger(data: ITriggerParam): (returnObject: IReturnTriggerObject) => void {
@@ -14,22 +14,22 @@ export class DriverAdapter implements IDatabaseStrategy{
     throw new Error("Method not implemented.");
   }
 
-  insertMany(data): (returnObject: IReturnObject) => void {
+  insertMany(data: any): (returnObject: IReturnObject) => void {
     return this.strategy.insertMany(data)
   }
-  deleteMany(data): (returnObject: IReturnObject) => void {
+  deleteMany(data: any): (returnObject: IReturnObject) => void {
     return this.strategy.deleteMany(data)
   }
-  selectMany(data): (returnObject: IReturnObject) => void {
+  selectMany(data: any): (returnObject: IReturnObject) => void {
     return this.strategy.selectMany(data)
   }
-  updateMany(data): (returnObject: IReturnObject) => void {
+  updateMany(data: any): (returnObject: IReturnObject) => void {
     return this.strategy.updateMany(data)
   }
-  update(data): (returnObject: IReturnObject) => void {
+  update(data: any): (returnObject: IReturnObject) => void {
     return this.strategy.update(data)
   }
-  delete(data): (returnObject: IReturnObject) => void {
+  delete(data: any): (returnObject: IReturnObject) => void {
     return this.strategy.delete(data)
   }
   prepare(migrate: IMigrations) {
@@ -39,11 +39,11 @@ export class DriverAdapter implements IDatabaseStrategy{
     return this.strategy.migrate(migration)
   }
 
-  insert(data) {
+  insert(data: any) {
     return this.strategy.insert(data);
   }
 
-  select(data) {
+  select(data: any) {
     return this.strategy.select(data);
   }
 }

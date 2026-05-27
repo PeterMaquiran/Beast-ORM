@@ -12,7 +12,7 @@ export class TransactionInfo {
 export class TransactionAbortion extends Error {
   
   errorCode = ErrorCode.Transaction
-  cause: ConstraintError
+  cause: ConstraintError = null as any
 
   constructor() {
     super()
@@ -25,10 +25,10 @@ export class TransactionAbortion extends Error {
 export class ConstraintError {
 
   code = ErrorCode.UniquenessField
-  message: string
-  name: string
+  message: string = ''
+  name: string = ''
 
-  constructor(data) {
+  constructor(data: any) {
     Object.assign(this, data)
   }
 

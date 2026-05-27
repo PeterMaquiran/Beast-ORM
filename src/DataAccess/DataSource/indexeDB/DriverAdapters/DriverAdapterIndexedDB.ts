@@ -14,7 +14,7 @@ const emptyCallBacks = {
 export class IndexedDBStrategy implements IDatabaseStrategy {
 
   databaseName: string
-  tableName: string
+  tableName: string = ''
 
   constructor(databaseName: string) {
     this.databaseName = databaseName
@@ -27,7 +27,7 @@ export class IndexedDBStrategy implements IDatabaseStrategy {
     }
   }
 
-  RemoveTrigger({table, data}:ITriggerParam): (returnObject: IReturnTriggerObject) => void {
+  RemoveTrigger({table, data}:ITriggerParam): (returnObject: any) => any {
     return async (callbacks: IReturnTriggerObject) => {
 
       const database = await databaseManager.getDb(this.databaseName)
@@ -275,7 +275,7 @@ export class IndexedDBStrategy implements IDatabaseStrategy {
           if(filteredRow) {
             callbacks.done(filteredRow)
           } else {
-            callbacks.notFound()
+            callbacks.notFound?.()
           }
           return
         }

@@ -13,13 +13,13 @@ export class sizeError extends Error{}
 
 
 export class field {
-	fieldName: FieldKeys
-	primaryKey?
+	fieldName: FieldKeys = null as any
+	primaryKey?: boolean
 	maxLength?:number | undefined
 	minLength?:number | undefined
 	choices?: any[] | undefined
-	type: number
-	blank: boolean
+	type: number = 0
+	blank: boolean = false
 	default?: any
 	unique: boolean = false
 	foreignKey?: boolean
@@ -27,12 +27,12 @@ export class field {
 
   constructor() {
     if(this.unique == false) {
-      delete this.unique
+      (this.unique as any) = undefined
     }
   }
 
 
-  isNull(value) {
+  isNull(value: any) {
 
 		if(value == undefined) {
 			return true
@@ -45,7 +45,7 @@ export class field {
 		return false
 	}
 
-	rules(field: field, value): EitherResultRule {
+	rules(field: field, value: any): EitherResultRule {
 
 
     if(value == null || value == undefined) {

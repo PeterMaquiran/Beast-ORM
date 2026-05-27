@@ -2,13 +2,13 @@ import { Model } from "../../Presentation/Api";
 import { ITableSchema } from "../_interface/interface.type";
 
 export class DataParameters {
-  getFilteredData(tableSchema: ITableSchema, data: Object) {
+  getFilteredData(tableSchema: ITableSchema, data: any) {
 
-    const filteredData = {}
+    const filteredData: any = {}
 
     for(const field of tableSchema.fieldNames) {
       if(field in data) {
-        filteredData[field]= data[field]
+        filteredData[field]= data[field as string];
       } else {
         filteredData[field]= undefined
       }
@@ -45,12 +45,12 @@ export class DataParameters {
   }
 
 
-  getUniqueData(tableSchema: ITableSchema, data: Object) {
+  getUniqueData(tableSchema: ITableSchema, data: any) {
 
     const uniqueFields = tableSchema.attributes.unique || []
     uniqueFields.push(tableSchema.id.keyPath)
 
-    const filteredData = {}
+    const filteredData: any = {}
 
     for(const field of uniqueFields) {
       if(field in data) {
@@ -75,23 +75,23 @@ export class DataParameters {
     return Object.keys(data).length >= 1
   }
 
-  getFilteredDataWithId(tableSchema: ITableSchema, data: Object) {
+  getFilteredDataWithId(tableSchema: ITableSchema, data: any) {
 
-    const filteredData = {}
+    const filteredData: any = {}
     tableSchema.fieldNames.push(tableSchema.id.keyPath)
 
     for(const field of tableSchema.fieldNames) {
       filteredData[field]= data[field]
     }
 
-    for(const fieldName of tableSchema.fieldTypes["OneToOneField"]) {
+    for(const fieldName of tableSchema.fieldTypes["OneToOneField"] as any[]) {
 
       const model : Model<any>=  data[fieldName]
       const KeyValue = model.getPrimaryKeyValue()
       filteredData[fieldName]= KeyValue
     }
 
-    for(const fieldName of tableSchema.fieldTypes.ForeignKey) {
+    for(const fieldName of tableSchema.fieldTypes.ForeignKey as any[]) {
 
       const model : Model<any>=  data[fieldName]
       const KeyValue = model.getPrimaryKeyValue()
@@ -101,15 +101,15 @@ export class DataParameters {
     return filteredData
   }
 
-  getFilteredDataOverlay(tableSchema: ITableSchema, data: Object) {
+  getFilteredDataOverlay(tableSchema: ITableSchema, data: any) {
 
-    const filteredData = {}
+    const filteredData: any = {}
 
     for(const [key, value] of Object.entries(data)) {
       const found = tableSchema.fieldNames.find( x => x==key)
 
       if(found) {
-        filteredData[value] = key
+        filteredData[value as string] = key;
       }
 
     }

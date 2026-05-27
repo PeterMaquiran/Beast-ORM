@@ -5,7 +5,7 @@ import { field } from '../../../BusinessLayer/validation/fields/allFields.type.j
 import { equalModels, getIdObjectWithT } from '../../../Utility/Model/utils.js'
 import { RuntimeMethods as RM } from '../../../BusinessLayer/modelManager/runtimeMethods/runTimeMethods.js'
 import { relationShip } from '../../../BusinessLayer/modelManager/relationships/relationShip.js'
-import { APIResponse } from '../../../Utility/Either/APIresponse.js'
+import { APIResponse } from '../../../Utility/Either/APIResponse.js'
 
 
 const PrototypeGust =  {
@@ -56,27 +56,27 @@ const PrototypeGust =  {
     onDelete?: any
   }) {
     let modelInstance: T[]=  []
-    const foreignKeyModel: typeof Model<T> = data.model as any
+    const foreignKeyModel: typeof Model<T> = (data as any).model as any
 
     return {
       async add(args:  T) {
 
-        const currentModel = data.I.getModel()
+        const currentModel = ((data as any).I as any).getModel()
 
         const middleTableName = relationShip.getMiddleTableName(currentModel, foreignKeyModel)
 
         const { fieldName } = currentModel.getTableSchema().middleTableRelatedFields[middleTableName]
 
-        return data.I[fieldName+RM.Add](args)
+        return ((data as any).I as any)[fieldName+RM.Add](args)
 
       },
       async all() {
-        const currentModel = data.I.getModel()
+        const currentModel = ((data as any).I as any).getModel()
 
         // const middleTableName = relationShip.getMiddleTableName(currentModel, foreignKeyModel)
 
         const middleModel = relationShip.getMiddleTable(currentModel, foreignKeyModel)
-        let [list, result] =  await relationShip.getAll<T>(data.I, foreignKeyModel, middleModel)
+        let [list, result] =  await relationShip.getAll<T>((data as any).I as any, foreignKeyModel, middleModel)
 
         // const [list, result]  =  await data.I[fieldName+RM.All]()
 
@@ -132,7 +132,7 @@ export const _RealPrototype =  {
 let FieldsStrategyContext = _RealPrototype
 
 export function GustPrototype() {
-  FieldsStrategyContext = PrototypeGust
+  FieldsStrategyContext = PrototypeGust as any
 }
 export function RealPrototype() {
   FieldsStrategyContext = _RealPrototype
@@ -203,7 +203,7 @@ export  function ManyToManyField<T>(data?:{
 	default?: any
 	onDelete?: any
 }): ManyToManyFieldParamsResult<T> {
-  return FieldsStrategyContext.ManyToManyField(data)
+  return FieldsStrategyContext.ManyToManyField(data as any)
 }
 
 
@@ -226,11 +226,11 @@ export const getter = {
         const staticModel = foreignKeyModel.getModelSchema()
         const tableSchema = foreignKeyModel.getTableSchema()
 
-        for(const fieldName of tableSchema.fieldTypes["ForeignKey"]) {
-          const Field: field = staticModel[fieldName]
-          if(equalModels(Field.model, currentModel)) {
-            const params = {}
-            params[fieldName] = data.I
+        for(const fieldName of (tableSchema.fieldTypes as any)["ForeignKey"]) {
+          const Field: field = (staticModel as any)[fieldName]
+          if(equalModels(Field.model as typeof Model<any>, currentModel)) {
+            const params: any = {};
+            (params)[fieldName] = data.I
 
             return await foreignKeyModel.create<T>({...args, ...params})
           }
@@ -241,11 +241,11 @@ export const getter = {
         const staticModel = foreignKeyModel.getModelSchema()
         const tableSchema = foreignKeyModel.getTableSchema()
 
-        for(const fieldName of tableSchema.fieldTypes["ForeignKey"]) {
-          const Field: field = staticModel[fieldName]
-          if(equalModels(Field.model, currentModel)) {
-            const filter = getIdObjectWithT(data.I, data.I)
-            const [list, result] = await Field.model.filter<T>(filter).execute()
+        for(const fieldName of (tableSchema.fieldTypes as any)["ForeignKey"]) {
+          const Field: field = (staticModel as any)[fieldName]
+          if(equalModels(Field.model as typeof Model<any>, currentModel)) {
+            const filter: any = getIdObjectWithT(data.I, data.I)
+            const [list, result] = await (Field.model as typeof Model<any>).filter<T>(filter).execute()
 
             if(result.isOk) {
               modelInstance = list
@@ -261,7 +261,7 @@ export const getter = {
       }
     }
 
-    return  function () { return a }
+    return  function () { return a } as any
   },
   ManyToManyGetter<T>(data:{
     model:  new () => T

@@ -12,26 +12,26 @@ export class DatabaseTriggerService {
   onCompleteReadTransaction: {[eventName:string]: {[tableName:string]: {[key:string]: Trigger[]} }} = {}
 
   subscribe(eventName: string, ModelName: string, callback: IReturnTriggerObject ) {
-    if(!this[eventName]) {
-      this[eventName] = {}
+    if(!(this as any)[eventName]) {
+      (this as any)[eventName] = {}
     }
-    if(!this[eventName][ModelName]) {
-      this[eventName][ModelName] = []
+    if(!(this as any)[eventName][ModelName]) {
+      (this as any)[eventName][ModelName] = []
     }
 
-    const subscriptionId = uniqueGenerator()
-    this[eventName][ModelName][subscriptionId] = {...callback}
+    const subscriptionId = uniqueGenerator() as string
+    (this as any)[eventName][ModelName][subscriptionId] = {...callback}
     callback.onsuccess({subscriptionId})
   }
 
-  unsubscribe(eventName: string, ModelName: string,subscriptionId, callback: IReturnTriggerObject ) {
-    delete this[eventName][ModelName][subscriptionId]
+  unsubscribe(eventName: string, ModelName: string,subscriptionId: any, callback: IReturnTriggerObject ) {
+    delete (this as any)[eventName][ModelName][subscriptionId]
   }
 
 
   executeTriggers(eventName: string, ModelName: string) {
-    if (this[eventName][ModelName]) {
-      for (const [subscriptionId, value] of Object.entries( this[eventName][ModelName]|| {})) {
+    if ((this as any)[eventName][ModelName]) {
+      for (const [subscriptionId, value] of Object.entries( (this as any)[eventName][ModelName]|| {})) {
         (value as any).stream({subscriptionId})
       }
     }

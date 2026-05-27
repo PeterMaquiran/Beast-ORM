@@ -37,7 +37,7 @@ export class AddRunTimeMethod {
         return tableSchemaClass;
       }
 
-      entries.models[index].prototype[RM.getTableSchema] = () => {
+      (entries.models[index] as any).prototype[RM.getTableSchema] = () => {
         return tableSchemaClass;
       }
     }
@@ -49,9 +49,9 @@ export class AddRunTimeMethod {
       const model = methodWithModel.Model
       for (const FUNCOBJT  of methodWithModel.func) {
         const func = FUNCOBJT.function
-        const functionName = FUNCOBJT.name
+        const functionName = FUNCOBJT.name;
 
-        model.prototype[functionName] = func
+        (model as any).prototype[functionName as string] = func
 
       }
     }
@@ -61,7 +61,7 @@ export class AddRunTimeMethod {
   addStaticFunctionFWrap(_Model:typeof Model<any>, methodName: string, value:object) {
     // Add a static method to the model for accessing the table schema.
 
-    _Model[methodName] = function () {
+    (_Model as any)[methodName as string] = function () {
       return value
     }
 
@@ -70,7 +70,7 @@ export class AddRunTimeMethod {
   addFunctionFWrap(_Model:typeof Model<any>, methodName: string, value:object) {
     // Add a static method to the model for accessing the table schema.
 
-    _Model.prototype[methodName] = function () {
+    (_Model as any).prototype[methodName as string] = function () {
       return value
     }
 
@@ -80,7 +80,7 @@ export class AddRunTimeMethod {
     // Add a static method to the model for accessing the table schema.
 
     // Add a static method to the model for accessing the table schema.
-    Model[methodName] =  func
+    (Model as any)[methodName as string] =  func
 
   }
 

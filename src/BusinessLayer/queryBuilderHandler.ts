@@ -8,7 +8,7 @@ class QueryBuilderHandler {
   async INSERT<T>(DatabaseStrategy: IDatabaseStrategy, QueryBuilder: QueryBuilder): Promise<Either<T,any>> {
 
     const dataToInsert = QueryBuilder.query.values
-    const result = []
+    const result: any[] = []
     const tableName = QueryBuilder.query.table
     const model = QueryBuilder.model
     const schema: ITableSchema = model[RM.getTableSchema]()
@@ -16,7 +16,7 @@ class QueryBuilderHandler {
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.insert({table:tableName, rows: dataToInsert})({
-        onsuccess:(data) => {
+        onsuccess:(data: any) => {
           const id = data.data;
           const index = data.index
           dataToInsert[index][idFieldName] =  id
@@ -42,7 +42,7 @@ class QueryBuilderHandler {
   async SELECT<T>(DatabaseStrategy: IDatabaseStrategy, QueryBuilder: QueryBuilder): Promise<Either<T,any>> {
 
     const tableName = QueryBuilder.query.table
-    let result = []
+    let result: any[] = []
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.select({table:tableName, query: QueryBuilder.query})({
@@ -56,7 +56,7 @@ class QueryBuilderHandler {
             resolve(error(false))
           }
         },
-        done:(data) => {
+        done:(data: any[]) => {
           if(QueryBuilder.hasNoCondition) {
             resolve(ok(result as any)) // get all with no condition `Model.all()`
           } else { // get with condition `Model.get()`
@@ -73,7 +73,7 @@ class QueryBuilderHandler {
 
     return await new Promise((resolve, reject) => {
       DatabaseStrategy.update({table:tableName, query: QueryBuilder.query})({
-        onsuccess:(data) => {
+        onsuccess:(data: any) => {
 
         },
         onerror:() => {

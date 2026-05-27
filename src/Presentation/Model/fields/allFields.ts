@@ -132,7 +132,7 @@ export class indexedDBJsonField extends indexedDBJsonFieldBL {
 export class TextField  extends TextFieldBL{
 
 	fieldName: FieldKeys = 'TextField'
-	type: FieldType.TEXT
+	type = FieldType.TEXT
   blank = false
 
 	constructor(data?:TextFieldParams) {
@@ -163,10 +163,10 @@ export class IntegerField extends IntegerFieldBL{
 export class ForeignKey extends ForeignKeyBL{
 
 	fieldName: FieldKeys = 'ForeignKey'
-  model: typeof Model<any>
+  model: typeof Model<any> = null as any
 	foreignKey = true
   blank = false
-  I: Model<any>
+  I: Model<any> = null as any
 
 	constructor(data?: ForeignKeyParams) {
 		super()
@@ -181,7 +181,7 @@ export class OneToOneField<T> extends OneToOneFieldBL implements OneToOneFieldPa
 	fieldName: FieldKeys = 'OneToOneField'
 	foreignKey = true
   blank = false
-  model: any
+  model: any = null as any
 
 	constructor(data?: OneToOneFieldParams<T>) {
 		super()
@@ -195,8 +195,8 @@ export class OneToOneField<T> extends OneToOneFieldBL implements OneToOneFieldPa
 export class ManyToManyField extends ManyToManyFieldBL implements ManyToManyFieldParams{
 
 	fieldName: FieldKeys = 'ManyToManyField'
-	model: typeof Model<any>
-  I: Model<any>
+	model: typeof Model<any> = null as any
+  I: Model<any> = null as any
 	foreignKey = true
   blank = false
 

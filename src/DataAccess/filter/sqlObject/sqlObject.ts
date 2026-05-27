@@ -19,7 +19,7 @@ export class SqlObject {
 		this.QueryReaderSelect = QueryReaderSelect
     this.argsAttributes = new argsAttributes(condition, TableSchema )
 
-		this.firstMethod = new methods[methodName](this.argsAttributes, this.TableSchema)
+		this.firstMethod = new (methods[methodName as keyof typeof methods] as any)(this.argsAttributes, this.TableSchema)
 	}
 
 	async run (rows: any[]): Promise<any[]>{

@@ -5,21 +5,21 @@ import { schemaGenerator } from "./modelManager/schemaGenerator/schemaGenerator.
 
 interface HiddenMethods{
   GET(KeyValue: Model): Object
-  DELETE (KeyValue:  Model)
-  UPDATE (dataToSave, KeyValue: Model)
+  DELETE (KeyValue:  Model): void
+  UPDATE (dataToSave: any, KeyValue: Model): void
 }
 
 type Model = typeof  KeyValueModel & HiddenMethods;
 
 
-function executeUpdate(dataToSave, KeyValue:  Model) {
+function executeUpdate(dataToSave: any, KeyValue:  Model): void {
   const key = KeyValue.getTableSchema().name
   localStorage.setItem(key, JSON.stringify(dataToSave))
 }
 
 function executeSelect(KeyValue: Model) {
   const key = KeyValue.getTableSchema().name
-  return  JSON.parse(localStorage.getItem(key))
+  return  JSON.parse(localStorage.getItem(key) as string)
 }
 
 function executeDelete(KeyValue: Model) {
@@ -37,15 +37,15 @@ class BeastORMKeyValueStore{
 
     for(const model of  register.models) {
 
-      model["GET"] = (a, b) => executeSelect(a)
-      model["DELETE"] = (a, b) => executeDelete(a)
-      model["UPDATE"] = (a, b) => executeUpdate(a, b)
+      (model as any)["GET"] = (a: Model) => executeSelect(a)
+      (model as any)["DELETE"] = (a: Model) => { executeDelete(a) }
+      (model as any)["UPDATE"] = (a: any, b: Model) => executeUpdate(a, b)
 
       model.clearComponent();
     }
   }
 
-  executeUpdate(dataToSave, model: Model) {
+  executeUpdate(dataToSave: any, model: Model) {
     model.UPDATE(dataToSave, model)
   }
 

@@ -21,7 +21,7 @@ export class UniqueField {
 
   message = "Unique field are not nullable in indexedDB"
   //queryId: string
-  data: string
+  data: string = ''
   table: string
   where: any[]
   limit: number
@@ -44,10 +44,10 @@ export class BulkDataUniqueFieldError {
   index: number = 0
   message = ""
 
-  constructor({table, rows, data, index}) {
+  constructor({table, rows, data, index}: {table: string, rows: any[], data: any[], index: number}) {
     this.table = table
-    this.rows = rows
-    this.data = data
+    this.rows = rows as never[]
+    this.data = data as never[]
     this.index = index
   }
 

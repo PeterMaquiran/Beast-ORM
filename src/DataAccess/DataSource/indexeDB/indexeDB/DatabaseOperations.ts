@@ -31,8 +31,8 @@ export class SelectOperation  extends DatabaseOperation {
   data: any;
   private callBacks: IReturnObject;
   isProcessing = false
-  private result:IOperationResult
-  private index
+  private result:IOperationResult = null as any
+  private index: number = 0
   operation = IIndexedDBOperations.getAll
   
   constructor(data: ISelectOperationParams) {
@@ -76,7 +76,7 @@ export class SelectOperation  extends DatabaseOperation {
 
 export class InsertOperation extends DatabaseOperation {
   isProcessing = false
-  private result:IOperationResult
+  private result:IOperationResult = null as any
   data: any;
   private callBacks: IReturnObject;
   operation = IIndexedDBOperations.add
@@ -135,7 +135,7 @@ export class InsertOperation extends DatabaseOperation {
 
 export class UpdateOperation extends DatabaseOperation {
   isProcessing = false
-  private result:IOperationResult
+  private result:IOperationResult = null as any
   data: any;
   private callBacks: IReturnObject;
 
@@ -165,7 +165,7 @@ export class UpdateOperation extends DatabaseOperation {
 
         reject(error);
         if(this.callBacks.onerror) {
-          this.callBacks.onerror((error.target["error"]))
+          this.callBacks.onerror((error.target as any)["error"])
         }
         this.runDoneCallBack(err(false))
       };
@@ -185,9 +185,9 @@ interface IDeleteOperationParams {
 
 export class DeleteOperation extends DatabaseOperation {
   isProcessing = false
-  private result:IOperationResult
+  private result:IOperationResult = null as any
   data: any;
-  pk: string | number;
+  pk: string | number = null as any;
   private callBacks: IReturnObject;
   operation = IIndexedDBOperations.delete
 
@@ -216,7 +216,7 @@ export class DeleteOperation extends DatabaseOperation {
 
         reject(error);
         if(this.callBacks.onerror) {
-          this.callBacks.onerror(error.target["error"])
+          this.callBacks.onerror((error.target as any)["error"])
         }
         this.runDoneCallBack(err(false))
       };
@@ -231,7 +231,7 @@ interface ClearAllOperationParams {
 
 export class ClearAllOperation extends DatabaseOperation {
   isProcessing = false
-  private result:IOperationResult
+  private result:IOperationResult = null as any
   private callBacks: IReturnObject;
   operation = IIndexedDBOperations.clear
   data: any;
@@ -259,7 +259,7 @@ export class ClearAllOperation extends DatabaseOperation {
 
         reject(error);
         if(this.callBacks.onerror) {
-          this.callBacks.onerror(error.target["error"])
+          this.callBacks.onerror((error.target as any)["error"])
         }
         this.runDoneCallBack(err(false))
       };
@@ -269,7 +269,7 @@ export class ClearAllOperation extends DatabaseOperation {
 
 export class GetAllOperation extends DatabaseOperation {
   isProcessing = false
-  private result:IOperationResult
+  private result:IOperationResult = null as any
   data: any;
   private callBacks: IReturnObject;
   operation = IIndexedDBOperations.getAll
@@ -297,7 +297,7 @@ export class GetAllOperation extends DatabaseOperation {
 
         reject(error);
         if(this.callBacks.onerror) {
-          this.callBacks.onerror(error.target["error"])
+          this.callBacks.onerror((error.target as any)["error"])
         }
         this.runDoneCallBack(err(false))
       };

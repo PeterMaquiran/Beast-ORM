@@ -17,13 +17,13 @@ export class QueryBuilder {
     values: [],
     updateValues: {},
     where: [],
-    limit: null,
+    limit: 0,
     hasIndex: false,
     isParamsArray: false
   }
-  model: typeof Model
+  model: typeof Model = null as any
 
-  constructor({isParamsArray}) {
+  constructor({isParamsArray}: {isParamsArray: boolean}) {
     this.query.isParamsArray = isParamsArray
   }
 
@@ -92,7 +92,7 @@ export class QueryBuilder {
    * @param {Object} values - An object representing key-value pairs to update in the table.
    * @returns {QueryBuilder} The QueryBuilder instance.
    */
-  set(values) {
+  set(values: any) {
     if (this.query.type === 'UPDATE') {
       this.query.updateValues = { ...this.query.updateValues, ...values };
     }
@@ -160,6 +160,6 @@ export class QueryBuilder {
 }
 
 
-function CreateQueryBuilder(arg) {
+function CreateQueryBuilder(arg: any) {
   return new QueryBuilder(arg)
 }

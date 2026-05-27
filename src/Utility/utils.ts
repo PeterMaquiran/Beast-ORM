@@ -17,9 +17,9 @@ export function hashCode(str:string)  {
 
 
 
-export function getDeep(obj, path) {
+export function getDeep(obj: any, path: string) {
   try {
-    for (var i=0, path=path.split('.'), len=path.length; i<len; i++) {
+    for (var i=0, pathArray=path.split('.'), len=pathArray.length; i<len; i++) {
       obj = obj[path[i]];
     };
     return obj;
@@ -31,17 +31,17 @@ export function getDeep(obj, path) {
 
 
 /** First Character uppercase */
-export function capitalize(str) {
+export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /** First Character lowercase */
-export function uncapitalize(str) {
+export function uncapitalize(str: string) {
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
 
 
 
-export function capitalizeFirstLetter(str) {
+export function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.substring(1);
 }

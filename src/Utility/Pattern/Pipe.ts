@@ -6,11 +6,11 @@ export class PipeService {
     this.functions = [];
   }
 
-  register(func) {
+  register(func: Function) {
     this.functions.push(func);
   }
 
-  execute(input) {
+  execute(input: any) {
     return this.functions.reduce((result, func) => func(result), input);
   }
 }

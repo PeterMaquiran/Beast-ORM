@@ -6,7 +6,7 @@ export  class ReactiveList {
 
   subscribe(model: typeof Model<any>, callback :ICallBackReactiveList<any>) {
     let value: any[];
-    let updateUi
+    let updateUi: Function = () => {}
 
     let subscription = model.transactionOnCommit(async () => {
       const [valueToUpdate, result] = await  callback(model as any)
@@ -34,7 +34,7 @@ export  class ReactiveList {
       unsubscribe: async () => {
         return await subscription.disconnect()
       },
-      setUpdateUi(func) {
+      setUpdateUi(func: Function) {
         updateUi  = func
       }
     }

@@ -27,7 +27,7 @@ export class AutoFieldBL  extends field{
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
   if(this.blank && (value == null || value == undefined) ) {
     return ok(true)
@@ -49,7 +49,7 @@ export class BigIntegerFieldBL extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
     if(this.blank && (value == null || value == undefined) ) {
       return ok(true)
@@ -74,7 +74,7 @@ export class BooleanFieldBL extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
 
 		if( typeof value != 'boolean') return error(new InvalidType())
@@ -90,7 +90,7 @@ export class CharFieldBL extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
     if(this.blank && (value == null || value == undefined) ) {
       return ok(true)
@@ -115,7 +115,7 @@ export class DateFieldBL extends field{
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
     if(this.blank && (value == null || value == undefined) ) {
       return ok(true)
@@ -139,7 +139,7 @@ export class DateTimeFieldBL  extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
     if(this.blank && (value == null || value == undefined) ) {
       return ok(true)
@@ -164,11 +164,11 @@ export class DateTimeFieldBL  extends field {
 export class indexedDBArrayFieldBL extends field  {
 
   size?: number
-  field: field
+  field: field = null as any
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
 		if( !(Array.isArray(value))) {
 			if(this.blank && this.isNull(value) == true) return ok(true)
@@ -197,7 +197,7 @@ export class indexedDBJsonFieldBL extends field {
 
 	constructor() { super() }
 
-  	valid(value): Either<true, FormValidationError> {
+  	valid(value: any): Either<true, FormValidationError> {
 
 		if(!(typeof value == 'object' && Array.isArray(value) == false)) {
 			if(this.blank && value != null) return error(new InvalidType())
@@ -215,7 +215,7 @@ export class TextFieldBL  extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
     if(this.blank && (value == null || value == undefined) ) {
       return ok(true)
@@ -242,7 +242,7 @@ export class IntegerFieldBL extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
 
     if(this.blank && (value == null || value == undefined) ) {
       return ok(true)
@@ -264,7 +264,7 @@ export class ForeignKeyBL extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
     const validation = this.rules(this, value)
     if (validation.isError) return validation
     else return ok(true)
@@ -276,7 +276,7 @@ export class OneToOneFieldBL extends field {
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
     const validation = this.rules(this, value)
     if (validation.isError) return validation
     else return ok(true)
@@ -288,7 +288,7 @@ export class ManyToManyFieldBL extends field{
 
 	constructor() { super() }
 
-  valid(value): Either<true, FormValidationError> {
+  valid(value: any): Either<true, FormValidationError> {
     const validation = this.rules(this, value)
     if (validation.isError) return validation
     else return ok(true)

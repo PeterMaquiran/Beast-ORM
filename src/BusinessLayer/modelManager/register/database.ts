@@ -23,7 +23,7 @@ export class Database {
 
     for(const tableSchema of tables) {
       const model = Models.find( (e) => e.getTableSchema().name == tableSchema.name)
-      const table = new Table(tableSchema, model)
+      const table = new Table(tableSchema, model as any)
       this.tables[tableSchema.name]= table
     }
 
@@ -31,7 +31,7 @@ export class Database {
   }
 
 
-  getTable(tableName) {
+  getTable(tableName: string) {
     return this.tables[tableName]
   }
 

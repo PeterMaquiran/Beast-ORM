@@ -8,7 +8,7 @@ import { EitherFormValidationError, FormValidationError } from "../BusinessLayer
 import { BulkDataUniqueFieldError, ItemNotFound } from "../BusinessLayer/queryBuilderHandler/queryErrorHandler.js";
 import { Either } from "../Utility/Either/index.js";
 import { TransactionAbortion } from "../DataAccess/_interface/interface.type.js";
-import { APIError, APIOk, APIResponse } from "../Utility/Either/APIresponse.js";
+import { APIError, APIOk, APIResponse } from "../Utility/Either/APIResponse.js";
 import { objectEqual } from "../BusinessLayer/modelManager/ObjectEqual.js";
 import { RuntimeMethods as RM } from "../BusinessLayer/modelManager/runtimeMethods/runTimeMethods.js";
 import { beastORMKeyValueStore } from "../BusinessLayer/besatOrmKeyValueStore.js";
@@ -22,7 +22,7 @@ export class Model<Model> implements IModel<Model> {
     throw("Register your Model before using the API") as any
   }
 
-  async save(params): Promise<APIResponse<number, FormValidationError>> {
+  async save(params: any): Promise<APIResponse<number, FormValidationError>> {
     const queryBuilder = new QueryBuilder({isParamsArray:false});
     const model = this.getModel()
     const tableSchema: ITableSchema = model.getTableSchema()
@@ -34,8 +34,8 @@ export class Model<Model> implements IModel<Model> {
     }
 
     const filter = {}
-    const idFieldName = tableSchema.id.keyPath
-    filter[idFieldName] = this[idFieldName]
+    const idFieldName = tableSchema.id.keyPath as string
+    (filter as any)[idFieldName] = (this as any)[idFieldName]
 
     queryBuilder.update(model).set(this).where(filter).limit(1).hasIndex(true)
 
@@ -55,16 +55,16 @@ export class Model<Model> implements IModel<Model> {
 
     const idFieldName = tableSchema.id.keyPath
 
-    return this[idFieldName]
+    return (this as any)[idFieldName]
   }
 
   setPrimaryKey(key: number | string) {
     const model = this.getModel()
     const tableSchema: ITableSchema = model.getTableSchema()
 
-    const primaryKeyFieldName = tableSchema.id.keyPath
+    const primaryKeyFieldName = tableSchema.id.keyPath as string
 
-    this[primaryKeyFieldName] = key
+    (this as any)[primaryKeyFieldName] = key
   }
 
   // delete one
@@ -75,9 +75,9 @@ export class Model<Model> implements IModel<Model> {
     const tableSchema: ITableSchema = model.getTableSchema()
 
     const filter = {}
-    const idFieldName = tableSchema.id.keyPath
+    const idFieldName = tableSchema.id.keyPath as string
 
-    filter[idFieldName] = this[idFieldName]
+    (filter as any)[idFieldName] = (this as any)[idFieldName]
     queryBuilder.deleteFrom(model).where(filter).limit(1).hasIndex(true)
 
     const result =  await ORM.deleteQueryNoFormValidation(queryBuilder, model)
@@ -178,7 +178,7 @@ export class Model<Model> implements IModel<Model> {
 
   }
 
-  static async create<T>(params): Promise<APIResponse<T, FormValidationError | TransactionAbortion>> {
+  static async create<T>(params: any): Promise<APIResponse<T, FormValidationError | TransactionAbortion>> {
 
     const isParamsArray = Array.isArray(params)? true : false
 
@@ -238,7 +238,7 @@ export class Model<Model> implements IModel<Model> {
 
       paramUnique[i] = ProcessedDataUniqueFieldOnly
       if(!dataParameters.hasField(ProcessedDataUniqueFieldOnly)) {
-        return APIError(new BulkDataUniqueFieldError({data:ProcessedDataUniqueFieldOnly, index:i, rows: paramsA, table:tableSchema.name}))
+        return APIError(new BulkDataUniqueFieldError({data:ProcessedDataUniqueFieldOnly, index:i as any, rows: paramsA, table:tableSchema.name}))
       }
     }
 
@@ -308,7 +308,7 @@ export class Model<Model> implements IModel<Model> {
     const paramUnique:  Object[] = []
     const model = this.getModel()
     const tableSchema: ITableSchema = model.getTableSchema()
-    const validator: (value: Object) => EitherFormValidationError  = model[RM.validator]
+    const validator: (value: Object) => EitherFormValidationError  = (model as any)[RM.validator]
 
 
     for( const object in params) {
@@ -324,7 +324,7 @@ export class Model<Model> implements IModel<Model> {
 
       paramUnique[i] = ProcessedDataUniqueFieldOnly
       if(!dataParameters.hasField(ProcessedDataUniqueFieldOnly)) {
-        return APIError(new BulkDataUniqueFieldError({data:ProcessedDataUniqueFieldOnly, index:i, rows: paramsA, table:tableSchema.name}))
+        return APIError(new BulkDataUniqueFieldError({data:ProcessedDataUniqueFieldOnly, index:i as any, rows: paramsA, table:tableSchema.name}))
       }
     }
 
@@ -363,7 +363,7 @@ export class Model<Model> implements IModel<Model> {
         const equal = objectEqual.same(allFindRequest[i].value, params[i])
 
         if(!equal) {
-          Object.assign(foundItem, params[i]);
+          Object.assign(foundItem as any, params[i] as any);
           await (foundItem as any).save()
         }
 
@@ -412,7 +412,7 @@ export const $B =  function <I, S>(model:  S)  {
     deleteAll() {
       return (model as unknown as typeof Model<I>).deleteAll()
     },
-    create(params) {
+    create(params: any) {
       return (model as unknown as typeof Model<I>).create<I>(params)
     },
     filter(value:Object) {
@@ -465,7 +465,7 @@ export class KeyValueModel {
     const fieldNames = this.getTableSchema().fieldNames
 
     for(const fieldName of fieldNames) {
-      this[fieldName] = null
+      (this as any)[fieldName] = null
     }
   }
 
