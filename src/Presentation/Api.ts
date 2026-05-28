@@ -22,7 +22,7 @@ export class Model<Model> implements IModel<Model> {
     throw("Register your Model before using the API") as any
   }
 
-  async save(params: any): Promise<APIResponse<number, FormValidationError>> {
+  async save(params?: Partial<Model>): Promise<APIResponse<number, FormValidationError>> {
     const queryBuilder = new QueryBuilder({isParamsArray:false});
     const model = this.getModel()
     const tableSchema: ITableSchema = model.getTableSchema()
@@ -127,11 +127,16 @@ export class Model<Model> implements IModel<Model> {
     throw("Register your Model before using the API") as any
   }
 
-  static async get<T>(value:Object): Promise<APIResponse<T, FormValidationError | ItemNotFound>> {
+  static async get<T>(value:Partial<T>): Promise<APIResponse<T, FormValidationError | ItemNotFound>> {
     const queryBuilder = new QueryBuilder({isParamsArray:false});
     const model = this.getModel()
     const tableSchema: ITableSchema = model.getTableSchema()
     const filter = dataParameters.getUniqueData(tableSchema, value)
+
+    console.log('filter', filter);
+    console.log('value', value);
+    console.log('model', model);
+    console.log('model', model);
 
     queryBuilder
       .select(model)
@@ -403,7 +408,7 @@ export class Model<Model> implements IModel<Model> {
 
 export const $B =  function <I, S>(model:  S)  {
   return {
-    get(value:Object) {
+    get(value:Partial<I>) {
       return (model as unknown as typeof Model<I>).get<I>(value)
     },
     all() {

@@ -20,7 +20,7 @@ class ConnectionManagerHelper {
    * @param tableName - The name of the object store.
    * @returns The created IDBObjectStore instance.
    */
-  createObjectStore(db: IDBDatabase, idObject: any, tableName: string): IDBObjectStore {
+  createObjectStore(db: IDBDatabase, idObject: IDBObjectStoreParameters, tableName: string): IDBObjectStore {
     return db.createObjectStore(tableName, idObject);
   }
 

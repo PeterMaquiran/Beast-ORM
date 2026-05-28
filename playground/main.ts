@@ -1,4 +1,3 @@
+import { models } from '../src'
 
-
-// document.querySelector('#output')!.innerHTML =
-//   JSON.stringify({user:'Pedro'})
+console.log(models)

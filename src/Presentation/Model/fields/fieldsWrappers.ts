@@ -116,7 +116,7 @@ export const _RealPrototype =  {
     return new Fields.BigIntegerField(data) as any
   },
   AutoField (data?: AutoFieldParams) {
-    return new Fields.AutoField(data) as any
+    return new Fields.AutoField(data)
   },
   indexedDB: {
     fields: {
@@ -165,7 +165,7 @@ export function BigIntegerField(data?:BigIntegerFieldParams): number {
 	return FieldsStrategyContext.BigIntegerField(data) as any
 }
 
-export function AutoField (data?: AutoFieldParams) {
+export function AutoField (data?: AutoFieldParams): number {
 	return FieldsStrategyContext.AutoField(data) as any
 }
 
