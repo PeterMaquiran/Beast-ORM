@@ -1,0 +1,299 @@
+import { schemaGenerator } from './modelManager/schemaGenerator/schemaGenerator.js'
+import { IRegister } from './beastOrm.type.js'
+import { modelRegistration } from './modelManager/register/register.js';
+import { MakeMigrations } from '../DataAccess/SchemaMigrations/MakeMigration.js';
+import { IDatabaseStrategy } from '../DataAccess/DriverAdapters/DriverAdapter.type.js';
+import { DBEventsTrigger, ICallBackReactiveList, IDatabaseSchema, ITableSchema } from './_interface/interface.type.js';
+import { QueryBuilder } from '../Presentation/queryBuilder/queryBuilder.js'
+import { Model } from '../Presentation/Api';
+import { validator } from './validation/validator.js'
+import { dataParameters } from "./modelManager/dataParameters.js"
+import { RuntimeMethods as RM } from './modelManager/runtimeMethods/runTimeMethods.js';
+import { EitherFormValidationError, FormValidationError } from './validation/fields/allFields.type.js';
+import { queryBuilderInsertHandler } from "./queryBuilderHandler/queryBuilderInsertHandler.js"
+import { queryBuilderDeleteHandler } from "./queryBuilderHandler/queryBuilderDeletehandler.js"
+import { queryBuilderUpdateHandler } from "./queryBuilderHandler/queryBuilderUpdateHandler.js"
+import { queryBuilderSelectHandler } from "./queryBuilderHandler/queryBuilderSelectHandler.js"
+import { relationShip } from './modelManager/relationships/relationShip.js';
+import { modelGeneration } from './modelManager/modelGenerator.js';
+import { addRunTimeMethod } from './modelManager/runtimeMethods/addRuntimeMethod.js';
+import { ReactiveList } from './reactiveList/reactiveList.js';
+import { Either } from '../Utility/Either/index.js';
+import { TransactionAbortion } from '../DataAccess/_interface/interface.type.js';
+
+class BeastORM {
+
+  register = (register:IRegister) => {
+
+    addRunTimeMethod.addModelSchema(register)
+    // generate schema
+    const schema = schemaGenerator.generate(register)
+
+    addRunTimeMethod.addGeneratedTableSchemaToModel(schema, register);
+
+    const middleTablesModels = modelGeneration.forMiddleTables(schema, register)
+
+    const methodToAdd = relationShip.generateRelationShipMethods(schema, register, middleTablesModels)
+
+    addRunTimeMethod.attachRelationShipMethods(methodToAdd)
+
+    const models = register.models.concat(middleTablesModels)
+    modelRegistration.register(schema, models)
+
+    const database = modelRegistration.getDatabase(schema.databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+
+
+    for(const model of register.models) {
+
+      addRunTimeMethod.addStaticFunctionFWrap(model, RM.getModel,  model);
+      addRunTimeMethod.addFunctionFWrap(model, RM.getModel,  model);
+
+      const generateValidator = validator.ModelValidator(model, model[RM.getTableSchema]())
+
+      addRunTimeMethod.addStaticFunctionFWrap(model, RM.validator,  generateValidator);
+
+    }
+
+    DatabaseStrategy.prepare(schema)({
+      onerror:()=>{},
+      onsuccess:()=>{},
+      done: () => {}
+    })
+
+    this.prepareMigrations(schema, DatabaseStrategy)
+  }
+
+  private async prepareMigrations (schema: IDatabaseSchema, DatabaseStrategy: IDatabaseStrategy) {
+    const makeMigrations = new MakeMigrations();
+    // console.log("===================================5")
+    await makeMigrations.make(schema)
+    // console.log("===================================6")
+
+    if(makeMigrations.needToMigrate) {
+      // console.log("Migrate")
+      // await migrateMigrations.prepareMigrate(schema, DatabaseStrategy)
+      // await migrateMigrations.migrate(schema, DatabaseStrategy)
+    } else {
+      // console.log('no need to migrate')
+    }
+  }
+
+  async executeInsertionQuery<PModel>(QueryBuilder: QueryBuilder, Model:Object):Promise<Either<PModel, FormValidationError | TransactionAbortion>>   {
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
+    const databaseName = tableSchema.databaseName
+
+    const database = modelRegistration.getDatabase(databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+
+      const arrayOfData = QueryBuilder.query.values
+      const arrayOfDataBackup = [...QueryBuilder.query.values]
+
+
+      const validator: (value: Object) => EitherFormValidationError  = (Model as any)[RM.validator]
+
+      for( const object in arrayOfData) {
+
+        arrayOfData[object] = dataParameters.getFilteredData(tableSchema, arrayOfData[object])
+
+        const validationResult = validator(arrayOfData[object])
+
+        if(validationResult.isError) {
+          return validationResult as any
+        }
+
+      }
+    QueryBuilder.setCleanData(arrayOfData)
+
+    if(QueryBuilder.query.isParamsArray) {
+
+      return await queryBuilderInsertHandler.INSERTMany(DatabaseStrategy, QueryBuilder, arrayOfDataBackup)
+    } else {
+      return await  queryBuilderInsertHandler.INSERTOne(DatabaseStrategy, QueryBuilder, arrayOfDataBackup)
+    }
+
+  }
+
+
+
+  async executeInsertionManyQuery<PModel>(QueryBuilder: QueryBuilder, Model:Object):Promise<Either<PModel, FormValidationError | TransactionAbortion>>   {
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
+    const databaseName = tableSchema.databaseName
+
+    const database = modelRegistration.getDatabase(databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+
+    const arrayOfData = QueryBuilder.query.values
+
+    return await queryBuilderInsertHandler.INSERTMany(DatabaseStrategy, QueryBuilder, arrayOfData)
+  }
+
+  executeSelectQuery<PModel>(QueryBuilder: QueryBuilder, Model: Object)   {
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
+    const databaseName = tableSchema.databaseName
+
+    const database = modelRegistration.getDatabase(databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+
+
+    return {
+      one: () => {
+        return queryBuilderSelectHandler.SELECTOne<PModel>(DatabaseStrategy, QueryBuilder)
+      },
+      many:() =>{
+        return queryBuilderSelectHandler.SELECTMany<PModel>(DatabaseStrategy, QueryBuilder)
+      },
+      decide:() => {
+        if(QueryBuilder.query.isParamsArray) {
+          return queryBuilderSelectHandler.SELECTMany<PModel>(DatabaseStrategy, QueryBuilder)
+        }
+
+        return queryBuilderSelectHandler.SELECTOne<PModel>(DatabaseStrategy, QueryBuilder)
+      }
+    }
+  }
+
+
+
+  async executeUpdateQuery<PModel>(QueryBuilder: QueryBuilder, Model:PModel):Promise<Either<number, FormValidationError>>   {
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
+    const databaseName = tableSchema.databaseName
+
+    const database = modelRegistration.getDatabase(databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+      if(QueryBuilder.query.isParamsArray) {
+        return await queryBuilderUpdateHandler.UPDATEMany(DatabaseStrategy, QueryBuilder)
+      } else {
+        return await queryBuilderUpdateHandler.UPDATEOne(DatabaseStrategy, QueryBuilder)
+      }
+  }
+
+
+  async deleteQuery<PModel>(QueryBuilder: QueryBuilder, Model:PModel):Promise<Either<number, FormValidationError>> {
+    const tableSchema: ITableSchema = (Model as any)[RM.getTableSchema]()
+    const databaseName = tableSchema.databaseName
+
+    const database = modelRegistration.getDatabase(databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+
+      const arrayOfData = QueryBuilder.query.values
+
+      for( const object in arrayOfData) {
+        arrayOfData[object] = dataParameters.getFilteredDataOverlay(tableSchema, arrayOfData[object])
+      }
+      QueryBuilder.setCleanData(arrayOfData)
+
+      if(QueryBuilder.query.isParamsArray) {
+        return await queryBuilderDeleteHandler.DELETEMany(DatabaseStrategy, QueryBuilder)
+      } else {
+        return await queryBuilderDeleteHandler.DELETEOne(DatabaseStrategy, QueryBuilder)
+      }
+  }
+
+  async deleteQueryNoFormValidation(QueryBuilder: QueryBuilder, model: typeof Model):Promise<Either<number, FormValidationError>> {
+    const tableSchema: ITableSchema = model.getTableSchema()
+    const databaseName = tableSchema.databaseName
+
+    const database = modelRegistration.getDatabase(databaseName)
+
+    const DatabaseStrategy = database
+      .DBConnectionManager
+      .driverAdapter
+      .strategy
+
+      if(QueryBuilder.query.isParamsArray) {
+        return await queryBuilderDeleteHandler.DELETEMany(DatabaseStrategy, QueryBuilder)
+      } else {
+        return await queryBuilderDeleteHandler.DELETEOne(DatabaseStrategy, QueryBuilder)
+      }
+  }
+
+
+  registerTrigger(_Model: typeof Model<any>, callBack:Function) {
+    const tableSchema: ITableSchema = _Model[RM.getTableSchema]()
+    const databaseName = tableSchema.databaseName
+    const tableName = tableSchema.name
+
+    const database = modelRegistration.getDatabase(databaseName)
+    const table = database.getTable(tableName)
+
+    const triggerEventName = DBEventsTrigger.onCompleteReadTransaction
+    const hasSubscription = table.trigger.hasSubscription(triggerEventName)
+    let subscriptionIdFromDataLayer: any;
+
+
+    const DatabaseStrategy = database
+    .DBConnectionManager
+    .driverAdapter
+    .strategy
+
+    const triggerRemove = () => {
+      DatabaseStrategy.RemoveTrigger({table:tableName, data:subscriptionIdFromDataLayer})({
+        onsuccess:({subscriptionId}: {subscriptionId: any}) => {},
+        onerror: () => {},
+        done: () => {}
+      })
+    }
+
+    let returnObject = table.trigger.listeningToSubscription(triggerEventName, callBack, triggerRemove)
+    if(!hasSubscription) {
+
+      table.trigger.registerTrigger(triggerEventName)
+
+      DatabaseStrategy.addTrigger({table:tableName, data:""})({
+        onsuccess:({subscriptionId}: {subscriptionId: any}) => {
+          subscriptionIdFromDataLayer = subscriptionId
+          table.trigger.createShareSubscription(triggerEventName, subscriptionId)
+          table.trigger.associateDispatchUIDToTrigger(triggerEventName,returnObject.dispatchUID,  subscriptionIdFromDataLayer)
+
+        },
+        stream: (data: any) => {
+
+          const subscriptionId = data.subscriptionId
+          table.trigger.executeTriggers( triggerEventName, subscriptionId)
+        },
+        onerror: () => {},
+        done: () => {}
+      })
+    } else {
+      subscriptionIdFromDataLayer = table.trigger.findTriggerToShared(triggerEventName)
+      table.trigger.associateDispatchUIDToTrigger(triggerEventName,returnObject.dispatchUID,  subscriptionIdFromDataLayer)
+    }
+
+    return returnObject
+  }
+
+  ReactiveList<I>(_Model: typeof Model<any>, callBack:ICallBackReactiveList<I>) {
+
+    const reactiveList = new ReactiveList()
+
+
+    return reactiveList.subscribe(_Model, callBack)
+  }
+}
+
+export const ORM = new BeastORM()

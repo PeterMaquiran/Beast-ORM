@@ -1,12 +1,12 @@
-import * as FieldsType from '../../../../../src/models/field/fields'
-import { models as  modelsType } from '../../../../../src/index'
+import * as FieldsType js'
+import { models as  modelsType } js'
 
 
 import fs from 'fs'
 const { Port } = JSON.parse(fs.readFileSync('./test/config/test.json', 'utf8'));
 
 describe("Field valid", () => {
-  
+
   beforeEach(async () => {
     await page.goto(`http://127.0.0.1:${Port}/test/index.html`)
   })
@@ -14,8 +14,8 @@ describe("Field valid", () => {
 
 	// =========================================== CharField
   it('CharField valid blank true', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -26,8 +26,17 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('true');
+		const text =  ('true');
 
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
+
+
+
+  it('CharField valid blank true', async () => {
+
+    await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -39,16 +48,16 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('true');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
-  }, 5000)
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
 
 
 	it('CharField not valid blank false 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -59,18 +68,18 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
+		const text =  ('{result:false}');
 
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 
 
 	it('CharField not valid blank false 1', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -82,57 +91,57 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   	}, 10000)
 
 
 	it('CharField maxLength: 10  not valid 3', async () => {
-		
-		await page.waitForFunction(() => 'models' in window);
-	
+
+		await  page.waitForFunction(() => 'models' in window);
+
 		await page.evaluate(() => {
-	
+
 			const Field: typeof FieldsType = window['Field']
 			const f1: any = Field.CharField({blank:false, maxLength: 10})
 			document.body.innerText = `{result:${JSON.stringify(f1.valid('12345678910121314151617'))}}`
-	
+
 		})
 		debugger
-	
-		await page.waitForFunction('{result:false}');
-		
-		expect('time not exceeded').toBe('time not exceeded')
-		
+
+		const text =  ('{result:false}');
+
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
 	}, 10000)
 
 
 	it('CharField maxLength: 100 valid 3', async () => {
-		
-		await page.waitForFunction(() => 'models' in window);
-	
+
+		await  page.waitForFunction(() => 'models' in window);
+
 		await page.evaluate(() => {
-	
+
 			const Field: typeof FieldsType = window['Field']
 			const f1: any = Field.CharField({blank:false, maxLength: 100})
 			document.body.innerText = `{result:${JSON.stringify(f1.valid('12345678910121314151617'))}}`
-	
+
 		})
 		debugger
-	
-		await page.waitForFunction('{result:true}');
-		
-		expect('time not exceeded').toBe('time not exceeded')
-		
+
+		const text =  ('{result:true}');
+
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
 	}, 10000)
 
 
 	// ============================================= TextField
 	it('TextField valid blank true 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -143,8 +152,19 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('true');
+		const text =  ('true');
 
+
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
+
+
+
+  it('TextField valid blank true 00', async () => {
+
+    await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -156,16 +176,16 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('true');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
-  }, 5000)
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
 
 
 	it('TextField not valid blank false 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -176,17 +196,17 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
+		const text =  ('{result:false}');
 
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 
 	it('TextField not valid blank false 1', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -198,16 +218,16 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 	// ============================================= IntegerField
 	it('IntegerField  true 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -218,29 +238,39 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('true');
+		const text =  ('true');
+
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
 
 
 
-		await page.evaluate(() => {
+  it('IntegerField  true 00', async () => {
+
+    await  page.waitForFunction(() => 'models' in window);
+
+    await page.evaluate(() => {
 
 			const Field: typeof FieldsType = window['Field']
 			const f1: any = Field.IntegerField({})
-			document.body.innerText = JSON.stringify(f1.valid(10))
+			document.body.innerText = JSON.stringify(f1.valid(1))
 
     })
     debugger
 
-		await page.waitForFunction('true');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
-  }, 5000)
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
+
 
 
 	it('IntegerField not valid incorrect type 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -251,16 +281,16 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 
 	it('IntegerField not valid incorrect type 1', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -272,29 +302,16 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 	// ============================================= BigIntegerField
 	it('BigIntegerField  true 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
 
-    await page.evaluate(() => {
-
-			const Field: typeof FieldsType = window['Field']
-			const f1: any = Field.BigIntegerField({})
-			document.body.innerText = JSON.stringify(f1.valid(1))
-
-    })
-    debugger
-
-		await page.waitForFunction('true');
-
-
+    await  page.waitForFunction(() => 'models' in window);
 
 		await page.evaluate(() => {
 
@@ -305,16 +322,36 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('true');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
-  }, 5000)
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
+
+
+  it('BigIntegerField  true 00', async () => {
+
+    await  page.waitForFunction(() => 'models' in window);
+
+    await page.evaluate(() => {
+
+			const Field: typeof FieldsType = window['Field']
+			const f1: any = Field.BigIntegerField({})
+			document.body.innerText = JSON.stringify(f1.valid(1))
+
+    })
+    debugger
+
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
 
 
 	it('BigIntegerField not valid incorrect type 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -325,16 +362,16 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 
 	it('BigIntegerField not valid incorrect type 1', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -346,18 +383,18 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 
 
 	// ============================================= DateTimeField
 	it('DateTimeField  true 0', async () => {
-	
-		await page.waitForFunction(() => 'models' in window);
+
+		await  page.waitForFunction(() => 'models' in window);
 
 		await page.evaluate(() => {
 
@@ -368,8 +405,14 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('true');
+		const text =  'true';
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+	}, 10000)
 
+
+  it('DateTimeField  true 00', async () => {
+
+		await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -381,16 +424,15 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('true');
-		
-		expect('time not exceeded').toBe('time not exceeded')
-		
-	}, 5000)
+		const text =  ('false');
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+	}, 10000)
 
 
 	it('DateTimeField not valid incorrect type 0', async () => {
-		
-		await page.waitForFunction(() => 'models' in window);
+
+		await  page.waitForFunction(() => 'models' in window);
 
 		await page.evaluate(() => {
 
@@ -401,16 +443,16 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('{result:false}');
-		
-		expect('time not exceeded').toBe('time not exceeded')
-		
+		const text =  ('{result:false}');
+
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
 	}, 10000)
 
 
 	it('DateTimeField not valid incorrect type 1', async () => {
-		
-		await page.waitForFunction(() => 'models' in window);
+
+		await  page.waitForFunction(() => 'models' in window);
 
 
 		await page.evaluate(() => {
@@ -422,16 +464,16 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('{result:false}');
-		
-		expect('time not exceeded').toBe('time not exceeded')
-		
+		const text =  ('{result:false}');
+
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
 	}, 10000)
 
 
 	it('DateTimeField not valid incorrect type 1', async () => {
-		
-		await page.waitForFunction(() => 'models' in window);
+
+		await  page.waitForFunction(() => 'models' in window);
 
 		await page.evaluate(() => {
 
@@ -442,56 +484,62 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('{result:false}');
-		
-		expect('time not exceeded').toBe('time not exceeded')
-		
+		const text =  ('{result:false}');
+
+		expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
 	}, 10000)
 
 
-	
+
 	// ============================================= indexedDB.JsonField
 	it('indexedDB.JsonField  true 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
 			const Field: typeof FieldsType = window['Field']
 
 			const { ArrayField, JsonField}  = Field.indexedDB.fields
-			
+
 			const f1: any = JsonField({})
 			document.body.innerText = JSON.stringify(f1.valid({}))
 
     })
     debugger
 
-		await page.waitForFunction('true');
+		const text =  ('true');
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
 
 
+  it('indexedDB.JsonField  true 00', async () => {
 
-		await page.evaluate(() => {
+    await  page.waitForFunction(() => 'models' in window);
+
+    await page.evaluate(() => {
 
 			const Field: typeof FieldsType = window['Field']
+
 			const { ArrayField, JsonField}  = Field.indexedDB.fields
-			
+
 			const f1: any = JsonField({})
-			
-			document.body.innerText = JSON.stringify(f1.valid({test:'test'}))
+			document.body.innerText = JSON.stringify(f1.valid({}))
 
     })
     debugger
 
-		await page.waitForFunction('true');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 	it('indexedDB.JsonField not valid incorrect type 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -504,15 +552,15 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 20000)
 
 	it('indexedDB.JsonField not valid incorrect type 1', async () => {
-		
-		await page.waitForFunction(() => 'models' in window);
+
+		await  page.waitForFunction(() => 'models' in window);
 
 			await page.evaluate(() => {
 
@@ -524,55 +572,63 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('{result:true}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:true}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   	}, 10000)
 
 
 		// ============================================= indexedDB.ArrayField
 	it('indexedDB.ArrayField  true 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
 			const Field: typeof FieldsType = window['Field']
 
 			const { ArrayField, JsonField}  = Field.indexedDB.fields
-			
+
 			const f1: any = ArrayField({})
 			document.body.innerText = JSON.stringify(f1.valid([]))
 
     })
     debugger
 
-		await page.waitForFunction('true');
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
+  }, 10000)
 
 
+
+  it('indexedDB.ArrayField  true 00', async () => {
+
+    await  page.waitForFunction(() => 'models' in window);
 
 		await page.evaluate(() => {
 
 			const Field: typeof FieldsType = window['Field']
 			const { ArrayField, JsonField}  = Field.indexedDB.fields
-			
+
 			const f1: any = ArrayField({})
-			
+
 			document.body.innerText = JSON.stringify(f1.valid(['1']))
 
     })
     debugger
 
-		await page.waitForFunction('true');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('true');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 
 	it('indexedDB.ArrayField not valid incorrect type 0', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
     await page.evaluate(() => {
 
@@ -585,15 +641,15 @@ describe("Field valid", () => {
     })
     debugger
 
-		await page.waitForFunction('{result:false}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:false}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 20000)
 
 	it('indexedDB.ArrayField  valid null', async () => {
-		
-    await page.waitForFunction(() => 'models' in window);
+
+    await  page.waitForFunction(() => 'models' in window);
 
 		await page.evaluate(() => {
 
@@ -605,9 +661,9 @@ describe("Field valid", () => {
 		})
 		debugger
 
-		await page.waitForFunction('{result:true}');
-    
-    expect('time not exceeded').toBe('time not exceeded')
-    
+		const text =  ('{result:true}');
+
+    expect(text).toBe(await page.$eval('body', el => (el as any).innerText))
+
   }, 10000)
 })

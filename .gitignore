@@ -1,5 +1,6 @@
 node_modules
-dist/src/tsconfig.tsbuildinfo
-test/config/test.json
-.env
-plugin_packages
+.vscode
+_src
+playground/dist
+dist
+screenshots
