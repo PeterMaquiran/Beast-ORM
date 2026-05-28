@@ -10,7 +10,7 @@
     "pnpm": "11.0.9"
   },
   "scripts": {
-    "dev": "concurrently \"pnpm:playground\" \"pnpm:cypress\"",
+    "dev": "concurrently \"pnpm:playground\" \"cypress open\"",
     "playground": "vite playground --port 5174",
     "build": "tsc && vite build",
     "test": "start-server-and-test playground http://localhost:5174 \"cypress run\""
