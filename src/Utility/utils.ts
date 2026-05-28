@@ -16,17 +16,26 @@ export function hashCode(str:string)  {
 }
 
 
-
 export function getDeep(obj: any, path: string) {
-  try {
-    for (var i=0, pathArray=path.split('.'), len=pathArray.length; i<len; i++) {
-      obj = obj[path[i]];
-    };
-    return obj;
-  } catch (error) {
-    return undefined
+  if (!obj || !path) return undefined;
+
+  let current = obj;
+  let key = "";
+  
+  for (let i = 0; i <= path.length; i++) {
+    const char = path[i];
+
+    if (char === "." || i === path.length) {
+      if (current == null) return undefined;
+      current = current[key];
+      key = "";
+    } else {
+      key += char;
+    }
   }
-};
+
+  return current;
+}
 
 
 
